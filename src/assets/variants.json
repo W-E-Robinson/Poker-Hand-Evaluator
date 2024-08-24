@@ -1,0 +1,12 @@
+{
+    "message": "List of supported poker variants to evaluate.",
+    "variants": [
+        {
+            "pathParameter": "five-card-draw",
+            "display": {
+                "default": "Five-card draw",
+                "alternates": ["Cantredraw"]
+            }
+        }
+    ]
+}
