@@ -1,3 +1,3 @@
 fn main() {
-    println!("Poker Hands Evaluator");
+    println!("API Service");
 }
