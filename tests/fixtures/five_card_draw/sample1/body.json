@@ -14,7 +14,7 @@
         },
         {
             "display": "player 4",
-            "cards": ["Ks", "Qs", "Js", "10s", "9h"]
+            "cards": ["Ks", "Qs", "Js", "Ts", "9h"]
         },
         {
             "display": "player 5",
