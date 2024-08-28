@@ -5,7 +5,7 @@ use std::{
 };
 
 pub fn web_server(port: String) {
-    let address = format!("127.0.0.1:{}", port);
+    let address = format!("0.0.0.0:{}", port);
 
     let listener = match TcpListener::bind(&address) {
         Ok(tcp_listener) => tcp_listener,
@@ -35,8 +35,10 @@ fn handle_connection(mut stream: TcpStream) {
     };
 
     let (status_line, filename) = if request_line == "GET /variants HTTP/1.1" {
+        eprintln!("Call to: GET /variants");
         ("HTTP/1.1 200 OK", "./src/assets/variants.json")
     } else {
+        eprintln!("Error: Endpoint path not found");
         ("HTTP/1.1 404 NOT FOUND", "./src/assets/404_not_found.json")
     };
 
@@ -56,4 +58,3 @@ fn handle_connection(mut stream: TcpStream) {
         eprintln!("Failed to write reponse: {}", error);
     }
 }
-
