@@ -78,6 +78,26 @@ fn handle_connection(mut stream: TcpStream) -> Result<(), std::io::Error> {
     Ok(())
 }
 
-fn evaluate_hands() -> String {
+struct RequestPlayer {
+    display: String,
+    cards: Vec<String>, // NOTE: validate
+}
+
+struct EvaluateRequest {
+    players: Vec<RequestPlayer>,
+}
+
+struct ResponsePlayer {
+    display: String,
+    cards: Vec<String>, // NOTE: enum for Cards
+    hand: String,
+    winner: bool,
+}
+
+struct EvaluateResponse {
+    players: Vec<ResponsePlayer>,
+}
+
+fn evaluate_hands(evalReq: EvaluateRequest) -> EvaluateResponse {
     return String::from("evaluate_hands");
 }
