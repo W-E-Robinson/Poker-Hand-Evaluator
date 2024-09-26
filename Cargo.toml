@@ -2,5 +2,3 @@
 name = "poker_hand_evaluator"
 version = "0.1.0"
 edition = "2021"
-
-[dependencies]

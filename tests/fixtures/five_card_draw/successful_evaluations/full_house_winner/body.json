@@ -1,0 +1,34 @@
+{
+    "players": [
+        {
+            "display": "player 1",
+            "cards": [
+                "Ah",
+                "Kh",
+                "Qc",
+                "Qd",
+                "Qh"
+            ]
+        },
+        {
+            "display": "player 2",
+            "cards": [
+                "2d",
+                "3d",
+                "4d",
+                "5d",
+                "9d"
+            ]
+        },
+        {
+            "display": "player 3",
+            "cards": [
+                "9c",
+                "9d",
+                "9s",
+                "8h",
+                "8d"
+            ]
+        }
+    ]
+}

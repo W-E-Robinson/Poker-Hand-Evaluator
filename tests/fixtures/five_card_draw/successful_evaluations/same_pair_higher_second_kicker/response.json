@@ -1,0 +1,40 @@
+{
+    "players": [
+        {
+            "display": "player 1",
+            "cards": [
+                "Jh",
+                "Kd",
+                "Th",
+                "Jh",
+                "Qh"
+            ],
+            "hand": "Pair of jacks with king, queen and ten kickers",
+            "winner": true
+        },
+        {
+            "display": "player 2",
+            "cards": [
+                "Jd",
+                "Jc",
+                "4d",
+                "5d",
+                "6d"
+            ],
+            "hand": "Pair of jacks with six, five and four kickers",
+            "winner": false
+        },
+        {
+            "display": "player 3",
+            "cards": [
+                "9c",
+                "2d",
+                "9s",
+                "8h",
+                "7h"
+            ],
+            "hand": "Pair of nines with eight, seven and two kickers",
+            "winner": false
+        }
+    ]
+}
