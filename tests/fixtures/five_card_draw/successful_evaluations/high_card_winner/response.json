@@ -1,0 +1,40 @@
+{
+    "players": [
+        {
+            "display": "player 1",
+            "cards": [
+                "Ah",
+                "Kh",
+                "9c",
+                "Jh",
+                "Qh"
+            ],
+            "hand": "High card ace with king, queen, jack and nine kickers",
+            "winner": true
+        },
+        {
+            "display": "player 2",
+            "cards": [
+                "2d",
+                "3d",
+                "4d",
+                "5d",
+                "7h"
+            ],
+            "hand": "High card seven with five, four, three and two kickers",
+            "winner": false
+        },
+        {
+            "display": "player 3",
+            "cards": [
+                "9c",
+                "3d",
+                "4s",
+                "8h",
+                "7h"
+            ],
+            "hand": "High card nine with eight, seven, four and three kickers",
+            "winner": false
+        }
+    ]
+}
