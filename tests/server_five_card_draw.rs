@@ -1,6 +1,4 @@
-use std::{
-    fs,
-};
+use std::fs;
 use std::io::{Read, Write};
 use std::net::TcpStream;
 use std::thread;

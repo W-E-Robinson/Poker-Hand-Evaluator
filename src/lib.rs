@@ -3,6 +3,8 @@ use std::{
     io::{prelude::*, BufReader},
     net::{TcpListener, TcpStream},
 };
+mod libs;
+use libs::PlayerEvaluation;
 
 pub fn web_server(port: String) {
     let address = format!("0.0.0.0:{}", port);
@@ -78,26 +80,26 @@ fn handle_connection(mut stream: TcpStream) -> Result<(), std::io::Error> {
     Ok(())
 }
 
-struct RequestPlayer {
-    display: String,
-    cards: Vec<String>, // NOTE: validate
-}
-
-struct EvaluateRequest {
-    players: Vec<RequestPlayer>,
-}
-
-struct ResponsePlayer {
-    display: String,
-    cards: Vec<String>, // NOTE: enum for Cards
-    hand: String,
-    winner: bool,
-}
-
-struct EvaluateResponse {
-    players: Vec<ResponsePlayer>,
-}
-
-fn evaluate_hands(evalReq: EvaluateRequest) -> EvaluateResponse {
-    return String::from("evaluate_hands");
-}
+// struct RequestPlayer {
+//     display: String,
+//     cards: Vec<String>, // NOTE: validate
+// }
+//
+// struct EvaluateRequest {
+//     players: Vec<RequestPlayer>,
+// }
+//
+// struct ResponsePlayer {
+//     display: String,
+//     cards: Vec<String>, // NOTE: enum for Cards
+//     hand: String,
+//     winner: bool,
+// }
+//
+// struct EvaluateResponse {h
+//     players: Vec<ResponsePlayer>,
+// }
+//
+// fn evaluate_hands(evalReq: EvaluateRequest) -> EvaluateResponse {
+//     return String::from("evaluate_hands");
+// }
