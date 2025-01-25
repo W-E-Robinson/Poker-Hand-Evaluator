@@ -1,0 +1,14 @@
+{
+    "players": [
+        {
+            "display": "player 1",
+            "cards": [
+                "Ah",
+                "Kh",
+                "Th",
+                "Jh",
+                "Qh"
+            ]
+        }
+    ]
+}

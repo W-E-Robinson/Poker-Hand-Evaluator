@@ -1,0 +1,16 @@
+{
+    "players": [
+        {
+            "display": "player 1",
+            "cards": [
+                "Ah",
+                "Kh",
+                "Th",
+                "Jh",
+                "Qh"
+            ],
+            "hand": "Ace high straight flush",
+            "winner": true
+        }
+    ]
+}

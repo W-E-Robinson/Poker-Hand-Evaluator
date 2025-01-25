@@ -18,13 +18,11 @@ cargo run
 ```sh
 docker build --pull --no-cache -t poker_hand_evaluator .
 ```
-
 2. Run container:
 ```sh
 docker run --rm -d -p 8080:8080 --name poker_hand_evaluator poker_hand_evaluator
 ```
-
-2. Stop container:
+3. Stop container:
 ```sh
 docker stop poker_hand_evaluator
 ```

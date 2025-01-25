@@ -1,4 +1,4 @@
 fn main() {
     eprintln!("Server successfully starting on port: 8080");
-    poker_hand_evaluator::web_server("8080".to_string());
+    poker_hand_evaluator::web_server("8080".to_string()); // NOTE: remove the need to put in port
 }

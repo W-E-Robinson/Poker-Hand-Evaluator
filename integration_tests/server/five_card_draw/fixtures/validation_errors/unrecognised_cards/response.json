@@ -1,0 +1,7 @@
+{
+    "error": {
+        "code": "400",
+        "type": "Bad request",
+        "message": "Invalid cards provided: 'not a card 1', 'not a card 2'"
+    }
+}

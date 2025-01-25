@@ -1,0 +1,7 @@
+{
+    "error": {
+        "code": "400",
+        "type": "Bad request",
+        "message": "Players 2 and 3 provided the incorrect number of cards, each player provides 5 cards"
+    }
+}

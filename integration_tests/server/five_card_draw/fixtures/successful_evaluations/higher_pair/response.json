@@ -1,0 +1,40 @@
+{
+    "players": [
+        {
+            "display": "player 1",
+            "cards": [
+                "Kd",
+                "Kh",
+                "Th",
+                "Jh",
+                "Qh"
+            ],
+            "hand": "Pair of kings with queen, jack and ten kickers",
+            "winner": true
+        },
+        {
+            "display": "player 2",
+            "cards": [
+                "3c",
+                "3d",
+                "4d",
+                "5d",
+                "6d"
+            ],
+            "hand": "Pair of threes with six, five and four kickers",
+            "winner": false
+        },
+        {
+            "display": "player 3",
+            "cards": [
+                "Tc",
+                "4d",
+                "9s",
+                "8h",
+                "7h"
+            ],
+            "hand": "High card ten with nine, eight, seven and four kickers",
+            "winner": false
+        }
+    ]
+}

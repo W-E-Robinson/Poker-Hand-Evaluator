@@ -1,0 +1,40 @@
+{
+    "players": [
+        {
+            "display": "player 1",
+            "cards": [
+                "Ah",
+                "Kh",
+                "Th",
+                "Jh",
+                "Kd"
+            ],
+            "hand": "Pair of kings with ace, jack and ten kickers",
+            "winner": false
+        },
+        {
+            "display": "player 2",
+            "cards": [
+                "2d",
+                "3d",
+                "4d",
+                "5d",
+                "Ac"
+            ],
+            "hand": "Wheel straight",
+            "winner": true
+        },
+        {
+            "display": "player 3",
+            "cards": [
+                "9c",
+                "9d",
+                "9s",
+                "8h",
+                "7h"
+            ],
+            "hand": "Three of a kind nines with eight and seven kickers",
+            "winner": false
+        }
+    ]
+}

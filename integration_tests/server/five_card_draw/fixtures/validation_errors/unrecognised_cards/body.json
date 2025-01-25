@@ -1,0 +1,12 @@
+{
+    "players": [
+        {
+            "display": "player 1",
+            "cards": ["not a card 1", "3h", "4h", "5h", "6h"]
+        },
+        {
+            "display": "player 2",
+            "cards": ["not a card 2", "8h", "9h", "Th", "Jh"]
+        }
+    ]
+}

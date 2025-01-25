@@ -1,0 +1,7 @@
+{
+    "error": {
+        "code": "400",
+        "type": "Bad request",
+        "message": "Maximum number of players in a Five Card Draw hand is 10, you provided 16"
+    }
+}
