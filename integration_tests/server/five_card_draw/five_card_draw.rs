@@ -30,7 +30,7 @@ fn test_handle_evaluate_five_card_draw() {
 
     let mut stream = TcpStream::connect("127.0.0.1:8083").expect("Failed to connect to server");
 
-    let request = b"POST /variants/five-card-draw HTTP/1.1\r\n\r\n"; // NOTE: how add body?
+    let request = b"POST /variants/five-card-draw HTTP/1.1\r\n\r\n";
     stream
         .write_all(request)
         .expect("Failed to write to stream");
