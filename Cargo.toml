@@ -2,3 +2,7 @@
 name = "poker_hand_evaluator"
 version = "0.1.0"
 edition = "2021"
+
+[dev-dependencies]
+reqwest = "0.12"
+tokio = { version = "1", features = ["full"] }
