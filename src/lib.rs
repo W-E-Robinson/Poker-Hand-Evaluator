@@ -3,10 +3,12 @@ use std::{
     io::{prelude::*, BufReader},
     net::{TcpListener, TcpStream},
 };
-mod libs;
+// mod libs;
 // use libs::PlayerEvaluation;
 
 pub fn web_server(port: String) {
+    // NOTE: all this server stuff is in the wrong file, move to
+    // bin/server
     let address = format!("0.0.0.0:{}", port);
 
     let listener = TcpListener::bind(&address).unwrap_or_else(|error| {
@@ -106,3 +108,23 @@ fn handle_connection(mut stream: TcpStream) -> Result<(), std::io::Error> {
 // fn evaluate_hands(evalReq: EvaluateRequest) -> EvaluateResponse {
 //     return String::from("evaluate_hands");
 // }
+
+// fn main() {
+//     eprintln!("Server successfully starting on port: 8080");
+//     poker_hand_evaluator::web_server("8080".to_string()); // NOTE: remove the need to put in port
+// }
+// why have thread running when can just run Dockerfile in compose and ping against?
+
+fn add(a: i32, b: i32) -> i32 {
+    a + b
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_add() {
+        assert_eq!(add(2, 3), 5);
+    }
+}

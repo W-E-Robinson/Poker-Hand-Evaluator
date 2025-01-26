@@ -13,6 +13,7 @@ async fn test_get_request() -> Result<(), Error> {
 
     Ok(())
 }
+// NOTE: keep as with dockerfile or actually use lil server as below?
 
 // fn normalize_string(s: &str) -> String {
 //     s.lines()

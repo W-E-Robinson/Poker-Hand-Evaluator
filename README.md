@@ -1,3 +1,8 @@
+### NOTES
+
+lib = just cargo test
+server = cargo run --bin server
+
 # Poker Hand Evaluator
 # Not yet completed
 
