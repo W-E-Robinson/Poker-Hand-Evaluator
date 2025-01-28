@@ -1,86 +1,19 @@
-use std::{
-    fs,
-    io::{prelude::*, BufReader},
-    net::{TcpListener, TcpStream},
-};
-mod libs;
-// use libs::PlayerEvaluation;
-
-pub fn web_server(port: String) {
-    let address = format!("0.0.0.0:{}", port);
-
-    let listener = TcpListener::bind(&address).unwrap_or_else(|error| {
-        panic!("Failed to bind to address {}: {:?}", address, error);
-    });
-
-    for stream in listener.incoming() {
-        match stream {
-            Ok(stream) => {
-                if let Err(e) = handle_connection(stream) {
-                    eprintln!("Error handling connection: {:?}", e);
-                    // NOTE: how pass an error through stream back to user?
-                }
-            }
-            Err(error) => eprintln!("Error accepting connection: {:?}", error),
-        }
-    }
+pub fn get_message() -> String {
+    String::from("lib binary")
 }
 
-fn handle_connection(mut stream: TcpStream) -> Result<(), std::io::Error> {
-    let mut buf_reader = BufReader::new(&mut stream);
+fn main() {
+    println!("hello world");
+}
 
-    let mut headers: Vec<String> = Vec::new();
-    let mut content_length = 0;
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    loop {
-        let mut line = String::new();
-        buf_reader.read_line(&mut line)?;
-        line = line.trim().to_string();
-
-        if line.is_empty() {
-            // Line space between headers and body
-            break;
-        }
-
-        if let Some(value) = line.strip_prefix("Content-Length: ") {
-            content_length = value.parse::<usize>().unwrap_or(0);
-        }
-
-        headers.push(line);
+    #[test]
+    fn test_get_message() {
+        assert_eq!(get_message(), String::from("lib binary"));
     }
-    eprintln!("Headers: {:?}", headers);
-
-    let mut body = vec![0; content_length];
-    buf_reader.read_exact(&mut body)?;
-
-    // let body_string = String::from_utf8_lossy(&body);
-    // if body_string.len() != 0 {
-    //      eprintln!("Body: {}", body_string);
-    // }
-
-    // let (status_line, filename) = if headers[0] == "GET /variants HTTP/1.1" {
-    //     eprintln!("Call to: GET /variants");
-    //     ("HTTP/1.1 200 OK", "./src/assets/variants.json")
-    // } else if headers[0].starts_with("POST /evaluate/") {
-    //     eprintln!("Call to: POST /evaluate");
-    //     ("HTTP/1.1 200 OK", "./src/assets/variants.json")
-    // } else {
-    //     eprintln!("Error: Endpoint path not found");
-    //     ("HTTP/1.1 404 NOT FOUND", "./src/assets/404_not_found.json")
-    // };
-
-    let (status_line, filename) = ("HTTP/1.1 200 OK", "./src/assets/variants.json");
-
-    let contents = fs::read_to_string(filename)?;
-
-    // let length = contents.len();
-    let length = 100;
-    let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
-
-    stream.write_all(response.as_bytes())?;
-    stream.flush()?;
-
-    Ok(())
 }
 
 // struct RequestPlayer {
@@ -106,3 +39,9 @@ fn handle_connection(mut stream: TcpStream) -> Result<(), std::io::Error> {
 // fn evaluate_hands(evalReq: EvaluateRequest) -> EvaluateResponse {
 //     return String::from("evaluate_hands");
 // }
+
+// fn main() {
+//     eprintln!("Server successfully starting on port: 8080");
+//     poker_hand_evaluator::web_server("8080".to_string()); // NOTE: remove the need to put in port
+// }
+// why have thread running when can just run Dockerfile in compose and ping against?

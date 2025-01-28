@@ -1,3 +1,9 @@
+### NOTES
+
+lib = just cargo test
+server = cargo run --bin server
+NOTE: nextest?
+
 # Poker Hand Evaluator
 # Not yet completed
 
@@ -20,7 +26,7 @@ docker build --pull --no-cache -t poker_hand_evaluator .
 ```
 2. Run container:
 ```sh
-docker run --rm -d -p 8080:8080 --name poker_hand_evaluator poker_hand_evaluator
+docker run --rm -p 8080:8080 --name poker_hand_evaluator poker_hand_evaluator
 ```
 3. Stop container:
 ```sh

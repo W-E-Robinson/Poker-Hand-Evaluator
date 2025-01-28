@@ -6,8 +6,10 @@ COPY Cargo.toml Cargo.lock ./
 RUN mkdir src
 COPY src/ src/
 
-RUN cargo build --release
+RUN cargo build --release --bin server
 
 EXPOSE 8080
 
 CMD ["cargo", "run", "--release"]
+
+# where put this?
