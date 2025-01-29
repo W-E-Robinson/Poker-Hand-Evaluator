@@ -10,6 +10,4 @@ RUN cargo build --release --bin server
 
 EXPOSE 8080
 
-CMD ["cargo", "run", "--release"]
-
-# where put this?
+CMD ["/usr/src/poker_hand_evaluator/target/release/server"]

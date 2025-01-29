@@ -1,5 +1,4 @@
 use std::{
-    // fs,
     io::{prelude::*, BufReader},
     net::{TcpListener, TcpStream},
 };
@@ -41,6 +40,8 @@ fn handle_connection(mut stream: TcpStream) -> Result<(), std::io::Error> {
         buf_reader.read_line(&mut line)?;
         line = line.trim().to_string();
 
+        println!("line: {:?}", line);
+
         if line.is_empty() {
             // Line space between headers and body
             break;
@@ -62,29 +63,27 @@ fn handle_connection(mut stream: TcpStream) -> Result<(), std::io::Error> {
         eprintln!("Body: {}", body_string);
     }
 
-    // println!("headers: {}", headers);
+    // let (status_line, _filename) = if headers[0] == "GET /variants HTTP/1.1" {
+    //     eprintln!("Call to: GET /variants");
+    //     ("HTTP/1.1 200 OK", "./src/assets/variants.json")
+    // } else if headers[0].starts_with("POST /evaluate/") {
+    //     eprintln!("Call to: POST /evaluate");
+    //     ("HTTP/1.1 200 OK", "./src/assets/variants.json")
+    // } else {
+    //     eprintln!("Error: Endpoint path not found");
+    //     ("HTTP/1.1 404 NOT FOUND", "./src/assets/404_not_found.json")
+    // };
 
-    let (status_line, _filename) = if headers[0] == "GET /variants HTTP/1.1" {
-        eprintln!("Call to: GET /variants");
-        ("HTTP/1.1 200 OK", "./src/assets/variants.json")
-    } else if headers[0].starts_with("POST /evaluate/") {
-        eprintln!("Call to: POST /evaluate");
-        ("HTTP/1.1 200 OK", "./src/assets/variants.json")
-    } else {
-        eprintln!("Error: Endpoint path not found");
-        ("HTTP/1.1 404 NOT FOUND", "./src/assets/404_not_found.json")
-    };
-
-    // let contents = fs::read_to_string(filename)?;
     let contents = get_message();
+    let length = contents.len();
+    let status_line = "HTTP/1.1 404 NOT FOUND";
 
-    let length = 100;
     let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+
+    eprintln!("response: {:?}", response);
 
     stream.write_all(response.as_bytes())?;
     stream.flush()?;
 
     Ok(())
 }
-
-// test main (or lower function) at this level

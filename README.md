@@ -9,6 +9,19 @@ NOTE: nextest?
 
 This repo contains a package and accompanying Dockerfile web server for evaluating poker hands.
 
+## Testing
+### Evaluation library tests
+```sh
+chmod +x ./run_lib_tests.sh
+./run_lib_tests.sh
+```
+
+### Server API tests
+```sh
+chmod +x ./run_server_tests.sh
+./run_server_tests.sh
+```
+
 ## Poker Variants
 - Five card draw
 
