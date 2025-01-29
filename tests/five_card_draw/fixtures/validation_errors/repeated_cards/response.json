@@ -1,7 +1,0 @@
-{
-    "error": {
-        "code": "400",
-        "type": "Bad request",
-        "message": "Duplicate cards: '2h', '3h'"
-    }
-}

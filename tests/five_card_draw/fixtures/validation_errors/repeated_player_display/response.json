@@ -1,7 +1,0 @@
-{
-    "error": {
-        "code": "400",
-        "type": "Bad request",
-        "message": "Each player must have a unique display, offending players: player 1"
-    }
-}
