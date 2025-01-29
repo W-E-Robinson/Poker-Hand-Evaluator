@@ -3,7 +3,7 @@ use serde_json::{json, Value};
 use tokio;
 
 #[tokio::test]
-async fn test_404_reponse() {
+async fn test_404_response() {
     let response = reqwest::get("http://localhost:8080/not-a-path")
         .await
         .unwrap();
