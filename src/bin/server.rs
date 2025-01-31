@@ -3,7 +3,7 @@ use std::{
     net::{TcpListener, TcpStream},
 };
 
-use poker_hand_evaluator::get_message;
+// use poker_hand_evaluator::get_message;
 
 fn main() {
     web_server(String::from("8080"));
@@ -74,7 +74,7 @@ fn handle_connection(mut stream: TcpStream) -> Result<(), std::io::Error> {
     //     ("HTTP/1.1 404 NOT FOUND", "./src/assets/404_not_found.json")
     // };
 
-    let contents = get_message();
+    let contents = String::from("lib binary");
     let length = contents.len();
     let status_line = "HTTP/1.1 404 NOT FOUND";
 

@@ -2,6 +2,8 @@ use reqwest::Client;
 use serde_json::{json, Value};
 use tokio;
 
+// NOTE: not enough players = 0
+
 #[tokio::test]
 async fn test_bad_request_too_many_players() {
     let body = json!({
