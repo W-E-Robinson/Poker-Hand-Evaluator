@@ -139,32 +139,58 @@ impl Card {
         Ok(Card { rank, suit })
     }
 
-    fn to_str(card: Card) -> Result<String, String> {
-        let suit_char = match card.suit {
-            Suit::Heart => Ok("h"),
-            Suit::Diamond => Ok("d"),
-            Suit::Club => Ok("c"),
-            Suit::Spade => Ok("s"),
-            _ => Err(format!("invalid card suit: {:?}", card.suit)),
-        }?;
+    // NOTE: or human readable, aka Three
+    // fn to_str(card: Card) -> Result<String, String> {
+    //     let suit_char = match card.suit {
+    //         Suit::Heart => Ok("h"),
+    //         Suit::Diamond => Ok("d"),
+    //         Suit::Club => Ok("c"),
+    //         Suit::Spade => Ok("s"),
+    //         _ => Err(format!("invalid card suit: {:?}", card.suit)),
+    //     }?;
 
-        let rank_char = match card.rank {
-            Rank::Two => Ok("2"),
-            Rank::Three => Ok("3"),
-            Rank::Four => Ok("4"),
-            Rank::Five => Ok("5"),
-            Rank::Six => Ok("6"),
-            Rank::Seven => Ok("7"),
-            Rank::Eight => Ok("8"),
-            Rank::Nine => Ok("9"),
-            Rank::Ten => Ok("T"),
-            Rank::Jack => Ok("J"),
-            Rank::Queen => Ok("Q"),
-            Rank::King => Ok("K"),
-            Rank::Ace => Ok("A"),
-            _ => Err(format!("invalid card rank: {:?}", card.rank)),
-        }?;
+    //     let rank_char = match card.rank {
+    //         Rank::Two => Ok("2"),
+    //         Rank::Three => Ok("3"),
+    //         Rank::Four => Ok("4"),
+    //         Rank::Five => Ok("5"),
+    //         Rank::Six => Ok("6"),
+    //         Rank::Seven => Ok("7"),
+    //         Rank::Eight => Ok("8"),
+    //         Rank::Nine => Ok("9"),
+    //         Rank::Ten => Ok("T"),
+    //         Rank::Jack => Ok("J"),
+    //         Rank::Queen => Ok("Q"),
+    //         Rank::King => Ok("K"),
+    //         Rank::Ace => Ok("A"),
+    //         _ => Err(format!("invalid card rank: {:?}", card.rank)),
+    //     }?;
 
-        Ok(String::from(format!("{}{}", rank_char, suit_char)))
+    //     Ok(String::from(format!("{}{}", rank_char, suit_char)))
+    // }
+    // fn to_display(self) -> Result<String, String> {
+
+    // NOTE: this needs full testing
+    // NOTE: add param for plural? = +s (+es for Six)
+    fn to_display(&self, plural: bool) -> String {
+        let display = match self.rank {
+            Rank::Two => format!("Two{}", if plural { "s" } else { "" }),
+            Rank::Three => format!("Three{}", if plural { "s" } else { "" }),
+            Rank::Four => format!("Four{}", if plural { "s" } else { "" }),
+            Rank::Five => format!("Five{}", if plural { "s" } else { "" }),
+            Rank::Six => format!("Six{}", if plural { "es" } else { "" }),
+            Rank::Seven => format!("Seven{}", if plural { "s" } else { "" }),
+            Rank::Eight => format!("Eight{}", if plural { "s" } else { "" }),
+            Rank::Nine => format!("Nine{}", if plural { "s" } else { "" }),
+            Rank::Ten => format!("Ten{}", if plural { "s" } else { "" }),
+            Rank::Jack => format!("Jack{}", if plural { "s" } else { "" }),
+            Rank::Queen => format!("Queen{}", if plural { "s" } else { "" }),
+            Rank::King => format!("King{}", if plural { "s" } else { "" }),
+            Rank::Ace => format!("Ace{}", if plural { "s" } else { "" }),
+            // NOTE: can there be an error?
+            // }?;
+        };
+
+        display
     }
 }
