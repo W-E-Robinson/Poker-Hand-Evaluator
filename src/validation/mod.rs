@@ -3,7 +3,6 @@ use std::collections::HashSet;
 
 use crate::{Card, PlayerRequest};
 
-// NOTE: will all this change if string is converted to Card before processing?
 pub fn general_validate(players: &Vec<PlayerRequest>) -> Result<(), String> {
     if players.len() == 0 {
         return Err(String::from("must provide at least one player"));
