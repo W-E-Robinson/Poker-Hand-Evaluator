@@ -2,7 +2,7 @@ use reqwest::Client;
 use serde_json::{json, Value};
 use tokio;
 
-// NOTE: not enough players = 0
+// NOTE: not enough players = 0 = actually should be in general
 
 #[tokio::test]
 async fn test_bad_request_too_many_players() {
@@ -323,7 +323,7 @@ async fn test_evaluation_full_house_winner() {
             {
                 "display": "player 3",
                 "cards": [ "9c", "9d", "9s", "8h", "8d" ],
-                "hand": "Three of a kind nines with eight and seven kickers",
+                "hand": "Full house, nines full of eights",
                 "winner": true
             }
         ]
