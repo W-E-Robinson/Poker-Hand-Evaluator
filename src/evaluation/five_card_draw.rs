@@ -1,9 +1,9 @@
 // use crate::{EvaluationResponse, PlayerRequest, SuccessEvaluationResponse};
 
-use crate::PlayerRequest;
+use crate::TransformedPlayerRequest;
 
 // pub fn evaluate(players: &Vec<PlayerRequest>) -> Result<EvaluationResponse, String> {
-pub fn evaluate(players: &Vec<PlayerRequest>) -> Result<(), String> {
+pub fn evaluate(players: Vec<TransformedPlayerRequest>) -> Result<(), String> {
     // let res = SuccessEvaluationResponse { // NOTE: or failure
     //     variant: String::from("five-card-draw"),
     //     players: vec![],

@@ -1,4 +1,4 @@
-use crate::{Card, Rank};
+use crate::{Card, Rank, Suit};
 use std::collections::HashMap;
 
 pub mod five_card_draw;

@@ -8,6 +8,7 @@ fn validate(request: &EvaluationRequest) -> Result<(), String> {
                                         // together
         )));
     }
+    // NOTE: should I just return the strings as Card from validation, or demand on creation?
 
     match request.variant.as_str() {
         "five_card_draw" => match validation::five_card_draw::validate(&request.players) {
@@ -23,24 +24,54 @@ fn validate(request: &EvaluationRequest) -> Result<(), String> {
     }
 }
 
+// NOTE: if enum Card is made public can skip this step entirely, offer both?
+fn transform(players: Vec<PlayerRequest>) -> Result<Vec<TransformedPlayerRequest>, String> {
+    players
+        .into_iter()
+        .map(|player| {
+            let transformed_cards: Result<Vec<Card>, String> = player
+                .cards
+                .into_iter()
+                .map(|card| {
+                    Card::from_str(&card).map_err(|_| format!("failed to transform card: {}", card))
+                })
+                .collect();
+
+            transformed_cards.map(|cards| TransformedPlayerRequest {
+                display: player.display,
+                cards,
+            })
+        })
+        .collect()
+}
+
 // pub fn evaluate(request: EvaluationRequest) -> Result<EvaluationResponse, String> {
 pub fn evaluate(request: EvaluationRequest) {
     if let Err(e) = validate(&request) {
-        println!("Validation failed: {}", e); // NOTE: don't print Err
+        println!("Validation failed: {}", e); // NOTE: don't print Err, return
     }
 
-    let evaluation = match request.variant.as_str() {
-        "five_card_draw" => evaluation::five_card_draw::evaluate(&request.players),
-        _ => Err(String::from(format!(
-            "Evaluation error: poker variant not is supported <{}>",
-            request.variant
-        ))),
-    };
+    let transformed_players = transform(request.players).map_err(|err| err); // NOTE: returning?
+
+    // NOTE: attach variant back on + rest of response
+    // let evaluation = match request.variant.as_str() {
+    //     "five_card_draw" => evaluation::five_card_draw::evaluate(transformed_players),
+    //     _ => Err(String::from(format!(
+    //         "Evaluation error: poker variant not is supported <{}>",
+    //         request.variant // NOTE: return error
+    //     ))),
+    // };
 }
 
 pub struct PlayerRequest {
     display: String,
     cards: Vec<String>,
+}
+
+// NOTE: offer Card publically? or offer both?
+pub struct TransformedPlayerRequest {
+    display: String,
+    cards: Vec<Card>,
 }
 
 pub struct EvaluationRequest {
