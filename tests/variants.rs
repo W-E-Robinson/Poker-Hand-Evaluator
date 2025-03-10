@@ -17,10 +17,17 @@ async fn test_variants_response() {
          "message": "List of supported poker variants to evaluate.",
          "variants": [
              {
-                 "pathParameter": "five-card-draw",
+                 "path_parameter": "five-card-draw",
                  "display": {
                      "default": "Five-card draw",
                      "alternates": ["Cantredraw"]
+                 }
+             },
+             {
+                 "path_parameter": "texas-holdem",
+                 "display": {
+                     "default": "Texas hold'em",
+                     "alternates": ["Texas holdem", "hold'em", "holdem"]
                  }
              }
          ]
