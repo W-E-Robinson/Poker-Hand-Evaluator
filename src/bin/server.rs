@@ -1,3 +1,4 @@
+mod validation;
 use std::{
     io::{prelude::*, BufReader},
     net::{TcpListener, TcpStream},
@@ -87,3 +88,47 @@ fn handle_connection(mut stream: TcpStream) -> Result<(), std::io::Error> {
 
     Ok(())
 }
+fn validate(request: &EvaluationRequest) -> Result<(), String> {
+    if let Err(e) = validation::general_validate(&request.players) {
+        return Err(String::from(format!(
+            "do error handling better", // NOTE: consider error handling at levels and how work
+                                        // together
+        )));
+    }
+    // NOTE: should I just return the strings as Card from validation, or demand on creation?
+
+    match request.variant.as_str() {
+        "five_card_draw" => match validation::five_card_draw::validate(&request.players) {
+            Ok(_) => Ok(()),
+            Err(e) => {
+                return Err(format!("Error in five_card_draw validation: {}", e));
+            }
+        },
+        _ => Err(String::from(format!(
+            "poker variant is not supported <{}>",
+            request.variant
+        ))),
+    }
+}
+//
+// NOTE: if enum Card is made public can skip this step entirely, offer both?
+fn transform(players: Vec<PlayerRequest>) -> Result<Vec<TransformedPlayerRequest>, String> {
+    players
+        .into_iter()
+        .map(|player| {
+            let transformed_cards: Result<Vec<Card>, String> = player
+                .cards
+                .into_iter()
+                .map(|card| {
+                    Card::from_str(&card).map_err(|_| format!("failed to transform card: {}", card))
+                })
+                .collect();
+
+            transformed_cards.map(|cards| TransformedPlayerRequest {
+                display: player.display,
+                cards,
+            })
+        })
+        .collect()
+}
+

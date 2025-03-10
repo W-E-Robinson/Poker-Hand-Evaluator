@@ -1,8 +1,25 @@
-// use crate::{EvaluationResponse, PlayerRequest, SuccessEvaluationResponse};
-
 use crate::TransformedPlayerRequest;
 
-// pub fn evaluate(players: &Vec<PlayerRequest>) -> Result<EvaluationResponse, String> {
+struct PlayerResponse {
+    display: String,
+    cards: Vec<String>,
+    hand: String,
+    winner: bool,
+}
+
+struct SuccessEvaluationResponse {
+    variant: String,
+    players: Vec<PlayerResponse>,
+}
+
+struct FailureEvaluationResponse {
+    message: String,
+}
+
+enum EvaluationResponse {
+    Success(SuccessEvaluationResponse),
+    Failure(FailureEvaluationResponse),
+}
 pub fn evaluate(players: Vec<TransformedPlayerRequest>) -> Result<(), String> {
     // let res = SuccessEvaluationResponse { // NOTE: or failure
     //     variant: String::from("five-card-draw"),
