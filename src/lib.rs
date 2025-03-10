@@ -1,49 +1,4 @@
 mod evaluation;
-mod validation;
-
-fn validate(request: &EvaluationRequest) -> Result<(), String> {
-    if let Err(e) = validation::general_validate(&request.players) {
-        return Err(String::from(format!(
-            "do error handling better", // NOTE: consider error handling at levels and how work
-                                        // together
-        )));
-    }
-    // NOTE: should I just return the strings as Card from validation, or demand on creation?
-
-    match request.variant.as_str() {
-        "five_card_draw" => match validation::five_card_draw::validate(&request.players) {
-            Ok(_) => Ok(()),
-            Err(e) => {
-                return Err(format!("Error in five_card_draw validation: {}", e));
-            }
-        },
-        _ => Err(String::from(format!(
-            "poker variant is not supported <{}>",
-            request.variant
-        ))),
-    }
-}
-
-// NOTE: if enum Card is made public can skip this step entirely, offer both?
-fn transform(players: Vec<PlayerRequest>) -> Result<Vec<TransformedPlayerRequest>, String> {
-    players
-        .into_iter()
-        .map(|player| {
-            let transformed_cards: Result<Vec<Card>, String> = player
-                .cards
-                .into_iter()
-                .map(|card| {
-                    Card::from_str(&card).map_err(|_| format!("failed to transform card: {}", card))
-                })
-                .collect();
-
-            transformed_cards.map(|cards| TransformedPlayerRequest {
-                display: player.display,
-                cards,
-            })
-        })
-        .collect()
-}
 
 // pub fn evaluate(request: EvaluationRequest) -> Result<EvaluationResponse, String> {
 pub fn evaluate(request: EvaluationRequest) {
@@ -74,30 +29,10 @@ pub struct TransformedPlayerRequest {
     cards: Vec<Card>,
 }
 
+// NOTE: where should various structs/enums live?
 pub struct EvaluationRequest {
     variant: String,
     players: Vec<PlayerRequest>,
-}
-
-struct PlayerResponse {
-    display: String,
-    cards: Vec<String>,
-    hand: String,
-    winner: bool,
-}
-
-struct SuccessEvaluationResponse {
-    variant: String,
-    players: Vec<PlayerResponse>,
-}
-
-struct FailureEvaluationResponse {
-    message: String,
-}
-
-enum EvaluationResponse {
-    Success(SuccessEvaluationResponse),
-    Failure(FailureEvaluationResponse),
 }
 
 // NOTE: make public?
@@ -133,6 +68,7 @@ pub struct Card {
     suit: Suit,
 }
 
+// NOTE: this needs full testing = all impls below
 impl Card {
     fn from_str(string: &str) -> Result<Self, String> {
         if string.len() != 2 || !string.is_ascii() {
@@ -170,41 +106,8 @@ impl Card {
         Ok(Card { rank, suit })
     }
 
-    // NOTE: or human readable, aka Three
-    // fn to_str(card: Card) -> Result<String, String> {
-    //     let suit_char = match card.suit {
-    //         Suit::Heart => Ok("h"),
-    //         Suit::Diamond => Ok("d"),
-    //         Suit::Club => Ok("c"),
-    //         Suit::Spade => Ok("s"),
-    //         _ => Err(format!("invalid card suit: {:?}", card.suit)),
-    //     }?;
-
-    //     let rank_char = match card.rank {
-    //         Rank::Two => Ok("2"),
-    //         Rank::Three => Ok("3"),
-    //         Rank::Four => Ok("4"),
-    //         Rank::Five => Ok("5"),
-    //         Rank::Six => Ok("6"),
-    //         Rank::Seven => Ok("7"),
-    //         Rank::Eight => Ok("8"),
-    //         Rank::Nine => Ok("9"),
-    //         Rank::Ten => Ok("T"),
-    //         Rank::Jack => Ok("J"),
-    //         Rank::Queen => Ok("Q"),
-    //         Rank::King => Ok("K"),
-    //         Rank::Ace => Ok("A"),
-    //         _ => Err(format!("invalid card rank: {:?}", card.rank)),
-    //     }?;
-
-    //     Ok(String::from(format!("{}{}", rank_char, suit_char)))
-    // }
-    // fn to_display(self) -> Result<String, String> {
-
-    // NOTE: this needs full testing
-    // NOTE: add param for plural? = +s (+es for Six)
-    fn to_display(&self, plural: bool) -> String {
-        let display = match self.rank {
+    fn to_display(self, plural: bool) -> String {
+        match self.rank {
             Rank::Two => format!("Two{}", if plural { "s" } else { "" }),
             Rank::Three => format!("Three{}", if plural { "s" } else { "" }),
             Rank::Four => format!("Four{}", if plural { "s" } else { "" }),
@@ -218,10 +121,27 @@ impl Card {
             Rank::Queen => format!("Queen{}", if plural { "s" } else { "" }),
             Rank::King => format!("King{}", if plural { "s" } else { "" }),
             Rank::Ace => format!("Ace{}", if plural { "s" } else { "" }),
-            // NOTE: can there be an error?
+            // NOTE: can there be an error? - think all impls
             // }?;
-        };
-
-        display
+        }
     }
+
+    // fn binary_value(&self) -> usize {
+    //     match self.rank {
+    //         Rank::Ace => 1,
+    //         Rank::Two => 2,
+    //         Rank::Three => 4,
+    //         Rank::Four => 8,
+    //         Rank::Five => 16,
+    //         Rank::Six => 32,
+    //         Rank::Seven => 64,
+    //         Rank::Eight => 128,
+    //         Rank::Nine => 256,
+    //         Rank::Ten => 512,
+    //         Rank::Jack => 1024,
+    //         Rank::Queen => 2048,
+    //         Rank::King => 4096,
+    //         Rank::Ace => 8192,
+    //     }
+    // }
 }
