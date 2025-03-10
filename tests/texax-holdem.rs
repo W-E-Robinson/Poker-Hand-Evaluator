@@ -1,68 +1,69 @@
 use reqwest::Client;
-
 use serde_json::{json, Value};
 use tokio;
 
 // NOTE: not enough players = 0 = actually should be in general
 // is the note above correct?
-
-#[tokio::test]
-async fn test_bad_request_too_many_players() {
-    let body = json!({
-      "players": [
-        { "display": "player 1", "cards": ["3h", "7s", "Ts", "4h", "Kd"] },
-        { "display": "player 2", "cards": ["5c", "Jd", "6h", "Qs", "3s"] },
-        { "display": "player 3", "cards": ["9d", "As", "2h", "5h", "Jh"] },
-        { "display": "player 4", "cards": ["Kh", "Td", "Qd", "Ah", "8h"] },
-        { "display": "player 5", "cards": ["6s", "7h", "4s", "2s", "9c"] },
-        { "display": "player 6", "cards": ["3d", "Jc", "9h", "8c", "Kc"] },
-        { "display": "player 7", "cards": ["7d", "5d", "Tc", "6c", "Ad"] },
-        { "display": "player 8", "cards": ["8d", "Qc", "4d", "2d", "7c"] },
-        { "display": "player 9", "cards": ["Js", "Ks", "9s", "4c", "Th"] },
-        { "display": "player 10", "cards": ["5s", "2c", "Qh", "6d", "Ac"] },
-        { "display": "player 11", "cards": ["3c", "Jc", "9h", "8c", "Kc"] }
-      ]
-    })
-    .to_string();
-
-    let client = Client::new();
-    let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
-        .body(body)
-        .send()
-        .await
-        .unwrap();
-
-    assert_eq!(response.status(), reqwest::StatusCode::BAD_REQUEST);
-
-    let response_text = response.text().await.unwrap();
-    // let response_json: Value = serde_json::from_str(&response_text).unwrap();
-
-    let expected_json = json!({
-        "error": {
-            "code": "400",
-            "type": "Bad request",
-            "message": "Maximum number of players in a Five-card draw hand is 10, 11 are provided"
-        }
-    });
-
-    assert_eq!(response_text, expected_json)
-}
+// #[tokio::test]
+// async fn test_bad_request_too_many_players() {
+// if remaining obvs need to change for holdem with board and burns
+//     let body = json!({
+//       "players": [
+//         { "display": "player 1", "cards": ["3h", "7s", "Ts", "4h", "Kd"] },
+//         { "display": "player 2", "cards": ["5c", "Jd", "6h", "Qs", "3s"] },
+//         { "display": "player 3", "cards": ["9d", "As", "2h", "5h", "Jh"] },
+//         { "display": "player 4", "cards": ["Kh", "Td", "Qd", "Ah", "8h"] },
+//         { "display": "player 5", "cards": ["6s", "7h", "4s", "2s", "9c"] },
+//         { "display": "player 6", "cards": ["3d", "Jc", "9h", "8c", "Kc"] },
+//         { "display": "player 7", "cards": ["7d", "5d", "Tc", "6c", "Ad"] },
+//         { "display": "player 8", "cards": ["8d", "Qc", "4d", "2d", "7c"] },
+//         { "display": "player 9", "cards": ["Js", "Ks", "9s", "4c", "Th"] },
+//         { "display": "player 10", "cards": ["5s", "2c", "Qh", "6d", "Ac"] },
+//         { "display": "player 11", "cards": ["3c", "Jc", "9h", "8c", "Kc"] }
+//       ]
+//     })
+//     .to_string();
+// 
+//     let client = Client::new();
+//     let response = client
+//         .post("http://localhost:8080/evaluate/texas-holdem")
+//         .body(body)
+//         .send()
+//         .await
+//         .unwrap();
+// 
+//     assert_eq!(response.status(), reqwest::StatusCode::BAD_REQUEST);
+// 
+//     let response_text = response.text().await.unwrap();
+//     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
+// 
+//     let expected_json = json!({
+//         "error": {
+//             "code": "400",
+//             "type": "Bad request",
+//             "message": "Maximum number of players in a Five-card draw hand is 10, 11 are provided"
+//         }
+//     });
+// 
+//     assert_eq!(response_text, expected_json)
+// }
 
 #[tokio::test]
 async fn test_bad_request_wrong_number_cards_player_hand() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
       "players": [
-        { "display": "player 1", "cards": ["2h", "3h", "4h", "5h", "6h"] },
-        { "display": "player 2", "cards": ["2h", "3h", "4h", "5h", "6h", "7h"] },
-        { "display": "player 3", "cards": ["2h", "3h", "4h", "5h"] }
+        { "display": "player 1", "cards": ["2h", "3h", "4h"] },
+        { "display": "player 2", "cards": ["2h", "3h"] },
+        { "display": "player 3", "cards": ["2h"] }
       ]
     })
     .to_string();
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -77,7 +78,81 @@ async fn test_bad_request_wrong_number_cards_player_hand() {
          "error": {
              "code": "400",
              "type": "Bad request",
-             "message": "Players 2 and 3 provided the incorrect number of cards, each player provides 5 cards"
+             "message": "Players 2 and 3 provided the incorrect number of cards, each player provides 2 cards"
+         }
+    });
+
+    assert_eq!(response_text, expected_json)
+}
+
+#[tokio::test]
+async fn test_bad_request_wrong_number_cards_board() {
+    let body = json!({
+        "board": ["4d", "5d", "6d", "7d"],
+        "burns": ["9d", "Td", "Jd"],
+      "players": [
+        { "display": "player 1", "cards": ["2h", "3h"] },
+        { "display": "player 2", "cards": ["2h", "3h"] },
+        { "display": "player 3", "cards": ["2h", "3h"] }
+      ]
+    })
+    .to_string();
+
+    let client = Client::new();
+    let response = client
+        .post("http://localhost:8080/evaluate/texas-holdem")
+        .body(body)
+        .send()
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), reqwest::StatusCode::BAD_REQUEST);
+
+    let response_text = response.text().await.unwrap();
+    // let response_json: Value = serde_json::from_str(&response_text).unwrap();
+
+    let expected_json = json!({
+         "error": {
+             "code": "400",
+             "type": "Bad request",
+             "message": "Incorrect number of board cards, the board must have 5 cards"
+         }
+    });
+
+    assert_eq!(response_text, expected_json)
+}
+
+#[tokio::test]
+async fn test_bad_request_wrong_number_cards_burns() {
+    let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td"],
+      "players": [
+        { "display": "player 1", "cards": ["2h", "3h"] },
+        { "display": "player 2", "cards": ["2h", "3h"] },
+        { "display": "player 3", "cards": ["2h", "3h"] }
+      ]
+    })
+    .to_string();
+
+    let client = Client::new();
+    let response = client
+        .post("http://localhost:8080/evaluate/texas-holdem")
+        .body(body)
+        .send()
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), reqwest::StatusCode::BAD_REQUEST);
+
+    let response_text = response.text().await.unwrap();
+    // let response_json: Value = serde_json::from_str(&response_text).unwrap();
+
+    let expected_json = json!({
+         "error": {
+             "code": "400",
+             "type": "Bad request",
+             "message": "Incorrect number of burn cards, the burn must have 3 cards"
          }
     });
 
@@ -87,6 +162,8 @@ async fn test_bad_request_wrong_number_cards_player_hand() {
 #[tokio::test]
 async fn test_evaluation_flush_chopped_pot() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "Ac", "3c", "4c", "5c", "6c" ] },
             { "display": "player 2", "cards": [ "Ad", "3d", "4d", "5d", "6d" ] },
@@ -97,7 +174,7 @@ async fn test_evaluation_flush_chopped_pot() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -109,6 +186,8 @@ async fn test_evaluation_flush_chopped_pot() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -137,6 +216,8 @@ async fn test_evaluation_flush_chopped_pot() {
 #[tokio::test]
 async fn test_evaluation_flush_over_straight() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "Ah", "Kd", "Th", "Jh", "Qh" ] },
             { "display": "player 2", "cards": [ "Ad", "3d", "4d", "5d", "6d" ] },
@@ -147,7 +228,7 @@ async fn test_evaluation_flush_over_straight() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -159,6 +240,8 @@ async fn test_evaluation_flush_over_straight() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -187,6 +270,8 @@ async fn test_evaluation_flush_over_straight() {
 #[tokio::test]
 async fn test_evaluation_flush_over_three_of_a_kind() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "2h", "Kh", "Th", "Jh", "Qh" ] },
             { "display": "player 2", "cards": [ "2d", "2d", "4d", "Kd", "6d" ] },
@@ -197,7 +282,7 @@ async fn test_evaluation_flush_over_three_of_a_kind() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -209,6 +294,8 @@ async fn test_evaluation_flush_over_three_of_a_kind() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -237,6 +324,8 @@ async fn test_evaluation_flush_over_three_of_a_kind() {
 #[tokio::test]
 async fn test_evaluation_four_of_a_kind_winner() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "Ah", "Kh", "Td", "Jh", "Qh" ] },
             { "display": "player 2", "cards": [ "2d", "3d", "4h", "5d", "6d" ] },
@@ -247,7 +336,7 @@ async fn test_evaluation_four_of_a_kind_winner() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -259,6 +348,8 @@ async fn test_evaluation_four_of_a_kind_winner() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -287,6 +378,8 @@ async fn test_evaluation_four_of_a_kind_winner() {
 #[tokio::test]
 async fn test_evaluation_full_house_winner() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "Ah", "Kh", "Qc", "Qd", "Qh" ] },
             { "display": "player 2", "cards": [ "2d", "3d", "4d", "5d", "9d" ] },
@@ -297,7 +390,7 @@ async fn test_evaluation_full_house_winner() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -309,6 +402,8 @@ async fn test_evaluation_full_house_winner() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -337,6 +432,8 @@ async fn test_evaluation_full_house_winner() {
 #[tokio::test]
 async fn test_evaluation_high_card_winner() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "Ah", "Kh", "9c", "Jh", "Qh" ] },
             { "display": "player 2", "cards": [ "2d", "3d", "4d", "5d", "7h" ] },
@@ -347,7 +444,7 @@ async fn test_evaluation_high_card_winner() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -359,6 +456,8 @@ async fn test_evaluation_high_card_winner() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -387,6 +486,8 @@ async fn test_evaluation_high_card_winner() {
 #[tokio::test]
 async fn test_evaluation_higher_pair() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "Kd", "Kh", "Th", "Jh", "Qh" ] },
             { "display": "player 2", "cards": [ "3c", "3d", "4d", "5d", "6d" ] },
@@ -397,7 +498,7 @@ async fn test_evaluation_higher_pair() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -409,6 +510,8 @@ async fn test_evaluation_higher_pair() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -437,6 +540,8 @@ async fn test_evaluation_higher_pair() {
 #[tokio::test]
 async fn test_evaluation_same_pair_higher_second_kicker() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -456,7 +561,7 @@ async fn test_evaluation_same_pair_higher_second_kicker() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -468,6 +573,8 @@ async fn test_evaluation_same_pair_higher_second_kicker() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -496,6 +603,8 @@ async fn test_evaluation_same_pair_higher_second_kicker() {
 #[tokio::test]
 async fn test_evaluation_single_player() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "Ah", "Kh", "Th", "Jh", "Qh" ] }
         ]
@@ -504,7 +613,7 @@ async fn test_evaluation_single_player() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -516,6 +625,8 @@ async fn test_evaluation_single_player() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -532,6 +643,8 @@ async fn test_evaluation_single_player() {
 #[tokio::test]
 async fn test_evaluation_straight_flush() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "Ah", "Kh", "Th", "Jh", "Qh" ] },
             { "display": "player 2", "cards": [ "2c", "3d", "4d", "5d", "6d" ] },
@@ -542,7 +655,7 @@ async fn test_evaluation_straight_flush() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -554,6 +667,8 @@ async fn test_evaluation_straight_flush() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -582,6 +697,8 @@ async fn test_evaluation_straight_flush() {
 #[tokio::test]
 async fn test_evaluation_straight_over_three_of_a_kind() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "Ad", "Kh", "Th", "Jh", "Qh" ] },
             { "display": "player 2", "cards": [ "Ac", "3d", "4d", "5d", "6d" ] },
@@ -592,7 +709,7 @@ async fn test_evaluation_straight_over_three_of_a_kind() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -604,6 +721,8 @@ async fn test_evaluation_straight_over_three_of_a_kind() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -632,6 +751,8 @@ async fn test_evaluation_straight_over_three_of_a_kind() {
 #[tokio::test]
 async fn test_evaluation_three_of_a_kind_over_pair() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "Kd", "Kh", "Th", "Jh", "Qh" ] },
             { "display": "player 2", "cards": [ "Ac", "3d", "4d", "5d", "6d" ] },
@@ -642,7 +763,7 @@ async fn test_evaluation_three_of_a_kind_over_pair() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -654,6 +775,8 @@ async fn test_evaluation_three_of_a_kind_over_pair() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -682,6 +805,8 @@ async fn test_evaluation_three_of_a_kind_over_pair() {
 #[tokio::test]
 async fn test_evaluation_wheel_flush() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "Ah", "Kh", "Th", "Jh", "Kd" ] },
             { "display": "player 2", "cards": [ "2d", "3d", "4d", "5d", "Ad" ] },
@@ -692,7 +817,7 @@ async fn test_evaluation_wheel_flush() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -704,6 +829,8 @@ async fn test_evaluation_wheel_flush() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
@@ -732,6 +859,8 @@ async fn test_evaluation_wheel_flush() {
 #[tokio::test]
 async fn test_evaluation_wheel_winner() {
     let body = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             { "display": "player 1", "cards": [ "Ah", "Kh", "Th", "Jh", "Kd" ] },
             { "display": "player 2", "cards": [ "2d", "3d", "4d", "5d", "Ac" ] },
@@ -742,7 +871,7 @@ async fn test_evaluation_wheel_winner() {
 
     let client = Client::new();
     let response = client
-        .post("http://localhost:8080/evaluate/five-card-draw")
+        .post("http://localhost:8080/evaluate/texas-holdem")
         .body(body)
         .send()
         .await
@@ -754,6 +883,8 @@ async fn test_evaluation_wheel_winner() {
     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
 
     let expected_json = json!({
+        "board": ["4d", "5d", "6d", "7d", "8d"],
+        "burns": ["9d", "Td", "Jd"],
         "players": [
             {
                 "display": "player 1",
