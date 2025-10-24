@@ -23,7 +23,7 @@ use tokio;
 //       ]
 //     })
 //     .to_string();
-// 
+//
 //     let client = Client::new();
 //     let response = client
 //         .post("http://localhost:8080/evaluate/texas-holdem")
@@ -31,12 +31,12 @@ use tokio;
 //         .send()
 //         .await
 //         .unwrap();
-// 
+//
 //     assert_eq!(response.status(), reqwest::StatusCode::BAD_REQUEST);
-// 
+//
 //     let response_text = response.text().await.unwrap();
 //     // let response_json: Value = serde_json::from_str(&response_text).unwrap();
-// 
+//
 //     let expected_json = json!({
 //         "error": {
 //             "code": "400",
@@ -44,7 +44,7 @@ use tokio;
 //             "message": "Maximum number of players in a Five-card draw hand is 10, 11 are provided"
 //         }
 //     });
-// 
+//
 //     assert_eq!(response_text, expected_json)
 // }
 

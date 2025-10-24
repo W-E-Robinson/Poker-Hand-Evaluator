@@ -1,35 +1,29 @@
-pub mod five_card_draw;
 use std::collections::HashSet;
 
-use crate::{Card, PlayerRequest};
+use crate::{Card, Hand, Variant};
 
-pub fn general_validate(players: &Vec<PlayerRequest>) -> Result<(), String> {
-    if players.len() == 0 {
-        return Err(String::from("must provide at least one player"));
-    }
+pub fn validate(hand: &Hand) -> Result<(), String> {
+    validate_no_repeated_cards(&hand)?;
+    validate_board(&hand)?;
+    validate_number_players(&hand)?;
+    validate_players_displays(&hand)?;
+    validate_players_cards(&hand)?;
 
-    let mut cards: HashSet<String> = HashSet::new();
-    let mut displays: HashSet<String> = HashSet::new();
+    Ok(())
+}
 
-    for player in players.iter() {
-        if displays.get(&player.display) == None {
-            displays.insert(player.display.clone());
-        } else {
-            return Err(String::from(format!(
-                "repeated player display: {}",
-                player.display,
-            )));
-        }
+fn validate_no_repeated_cards(hand: &Hand) -> Result<(), String> {
+    let mut given_cards: HashSet<Card> = HashSet::new();
 
+    for player in hand.players.iter() {
         for card in player.cards.iter() {
-            if let Err(_err) = Card::from_str(card) {
-                return Err(String::from(format!("invalid card: {}", card)));
-            }
-
-            if cards.get(card) == None {
-                cards.insert(card.to_owned());
+            if given_cards.get(card) == None {
+                given_cards.insert(card.clone());
             } else {
-                return Err(String::from(format!("repeated card: {}", card)));
+                return Err(String::from(format!(
+                    "Repeated card: {}",
+                    card.clone().to_card_string()
+                )));
             }
         }
     }
@@ -37,33 +31,73 @@ pub fn general_validate(players: &Vec<PlayerRequest>) -> Result<(), String> {
     Ok(())
 }
 
-pub fn too_many_players(
-    players: &Vec<PlayerRequest>,
-    cards_per_player: usize,
-    board_cards: usize,
-    burn_cards: usize,
-) -> Result<(), String> {
-    let max_players = (52 - board_cards - burn_cards) / cards_per_player;
-    if players.len() > max_players {
+fn validate_board(hand: &Hand) -> Result<(), String> {
+    match hand.variant {
+        Variant::FiveCardDraw => {
+            if hand.board.is_some() {
+                return Err(String::from(format!(
+                    "There should be no board for {}",
+                    hand.variant.to_string(),
+                )));
+            }
+        }
+        Variant::TexasHoldem => {
+            if hand.board_len() != hand.variant.number_board_cards() {
+                return Err(String::from(format!(
+                    "The board must be {} cards long for {}",
+                    hand.variant.number_board_cards(),
+                    hand.variant.to_string(),
+                )));
+            }
+        }
+    }
+
+    Ok(())
+}
+
+fn validate_number_players(hand: &Hand) -> Result<(), String> {
+    if hand.players.len() == 0 {
+        return Err(String::from("At least one player must be provided"));
+    }
+
+    let max_players = (52 - hand.variant.number_board_cards() - hand.variant.number_burn_cards())
+        / hand.variant.number_player_cards();
+    let number_players = hand.players.iter().len();
+    if number_players > max_players {
         return Err(String::from(format!(
-            "maximum number of players is {}, {} provided",
-            max_players,
-            players.len()
+            "Maximum number of players is {}, {} provided",
+            max_players, number_players,
         )));
     }
 
     Ok(())
 }
 
-pub fn wrong_number_cards(
-    players: &Vec<PlayerRequest>,
-    cards_per_player: usize,
-) -> Result<(), String> {
-    for player in players.iter() {
-        if player.cards.len() != cards_per_player {
+fn validate_players_displays(hand: &Hand) -> Result<(), String> {
+    let mut displays: HashSet<String> = HashSet::new();
+
+    for player in hand.players.iter() {
+        if displays.get(&player.display) == None {
+            displays.insert(player.display.clone());
+        } else {
             return Err(String::from(format!(
-                "expected number of cards per player is {}, {} provided for {}",
-                cards_per_player,
+                "Repeated player display: {}",
+                player.display,
+            )));
+        }
+    }
+
+    Ok(())
+}
+
+fn validate_players_cards(hand: &Hand) -> Result<(), String> {
+    let expected_number_cards = hand.variant.number_player_cards();
+    for player in hand.players.iter() {
+        if player.cards.len() != expected_number_cards {
+            return Err(String::from(format!(
+                "Expected number of cards per player is {} for {}, {} provided for {}",
+                expected_number_cards,
+                hand.variant.to_string(),
                 player.cards.len(),
                 player.display,
             )));
@@ -75,168 +109,245 @@ pub fn wrong_number_cards(
 
 #[cfg(test)]
 mod tests {
+    use crate::{Player, Rank, Suit};
+
     use super::*;
 
     #[test]
-    fn test_errors_no_players() {
-        let players_requests = vec![];
-        let error = general_validate(&players_requests).unwrap_err();
-        assert_eq!(error, "must provide at least one player");
+    fn test_errors_when_repeated_cards() {
+        let hand = Hand {
+            variant: Variant::FiveCardDraw,
+            players: vec![Player {
+                display: String::from("Player 1"),
+                cards: vec![
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                ],
+            }],
+            board: None,
+        };
+
+        let error = validate(&hand).unwrap_err();
+        assert_eq!(error, "Repeated card: Ace of Hearts");
     }
 
     #[test]
-    fn test_errors_repeated_card() {
-        let players_requests = vec![
-            PlayerRequest {
-                display: "player 1".to_owned(),
+    fn test_errors_when_board_given_for_five_card_draw() {
+        let hand = Hand {
+            variant: Variant::FiveCardDraw,
+            players: vec![Player {
+                display: String::from("Player 1"),
                 cards: vec![
-                    "2h".to_owned(),
-                    "3h".to_owned(),
-                    "4h".to_owned(),
-                    "5h".to_owned(),
-                    "6h".to_owned(),
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Queen,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Jack,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Ten,
+                        suit: Suit::Heart,
+                    },
                 ],
-            },
-            PlayerRequest {
-                display: "player 2".to_owned(),
-                cards: vec![
-                    "2h".to_owned(),
-                    "3d".to_owned(),
-                    "4d".to_owned(),
-                    "5d".to_owned(),
-                    "6d".to_owned(),
-                ],
-            },
-        ];
-        let error = general_validate(&players_requests).unwrap_err();
-        assert_eq!(error, "repeated card: 2h");
+            }],
+            board: Some(vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Club,
+            }]),
+        };
+
+        let error = validate(&hand).unwrap_err();
+        assert_eq!(error, "There should be no board for Five-card draw");
     }
 
     #[test]
-    fn test_errors_repeated_player_display() {
-        let players_requests = vec![
-            PlayerRequest {
-                display: "player 1".to_owned(),
+    fn test_errors_when_board_given_for_texas_holdem_is_wrong_length() {
+        let hand = Hand {
+            variant: Variant::TexasHoldem,
+            players: vec![Player {
+                display: String::from("Player 1"),
                 cards: vec![
-                    "2h".to_owned(),
-                    "3h".to_owned(),
-                    "4h".to_owned(),
-                    "5h".to_owned(),
-                    "6h".to_owned(),
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Queen,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Jack,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Ten,
+                        suit: Suit::Heart,
+                    },
                 ],
-            },
-            PlayerRequest {
-                display: "player 1".to_owned(),
-                cards: vec![
-                    "2d".to_owned(),
-                    "3d".to_owned(),
-                    "4d".to_owned(),
-                    "5d".to_owned(),
-                    "6d".to_owned(),
-                ],
-            },
-        ];
-        let error = general_validate(&players_requests).unwrap_err();
-        assert_eq!(error, "repeated player display: player 1");
+            }],
+            board: Some(vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Club,
+            }]),
+        };
+
+        let error = validate(&hand).unwrap_err();
+        assert_eq!(error, "The board must be 5 cards long for Texas hold 'em");
     }
 
     #[test]
-    fn test_errors_unrecognised_card() {
-        let players_requests = vec![
-            PlayerRequest {
-                display: "player 1".to_owned(),
-                cards: vec![
-                    "not a card".to_owned(),
-                    "3h".to_owned(),
-                    "4h".to_owned(),
-                    "5h".to_owned(),
-                    "6h".to_owned(),
-                ],
-            },
-            PlayerRequest {
-                display: "player 2".to_owned(),
-                cards: vec![
-                    "2d".to_owned(),
-                    "3d".to_owned(),
-                    "4d".to_owned(),
-                    "5d".to_owned(),
-                    "6d".to_owned(),
-                ],
-            },
-        ];
-        let error = general_validate(&players_requests).unwrap_err();
-        assert_eq!(error, "invalid card: not a card");
+    fn test_errors_when_no_players_provided() {
+        let hand = Hand {
+            variant: Variant::FiveCardDraw,
+            players: vec![],
+            board: None,
+        };
+
+        let error = validate(&hand).unwrap_err();
+        assert_eq!(error, "At least one player must be provided");
     }
 
     #[test]
-    fn test_errors_too_many_players() {
-        let players_requests = vec![
-            PlayerRequest {
-                display: "player 1".to_owned(),
-                cards: vec![
-                    "2h".to_owned(),
-                    "3h".to_owned(),
-                    "4h".to_owned(),
-                    "5h".to_owned(),
-                    "6h".to_owned(),
-                ],
-            },
-            PlayerRequest {
-                display: "player 2".to_owned(),
-                cards: vec![
-                    "2d".to_owned(),
-                    "3d".to_owned(),
-                    "4d".to_owned(),
-                    "5d".to_owned(),
-                    "6d".to_owned(),
-                ],
-            },
-        ];
-        let error = too_many_players(&players_requests, 25, 5, 5).unwrap_err();
-        assert_eq!(error, "maximum number of players is 1, 2 provided");
+    fn test_errors_when_players_displays_repeated() {
+        let hand = Hand {
+            variant: Variant::TexasHoldem,
+            players: vec![
+                Player {
+                    display: String::from("Player 1"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    display: String::from("Player 1"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+            ],
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Club,
+                },
+            ]),
+        };
+
+        let error = validate(&hand).unwrap_err();
+        assert_eq!(error, "Repeated player display: Player 1");
     }
 
     #[test]
-    fn test_errors_wrong_number_cards() {
-        let players_requests = vec![
-            PlayerRequest {
-                display: "player 1".to_owned(),
+    fn test_errors_when_player_wrong_number_cards() {
+        let hand = Hand {
+            variant: Variant::TexasHoldem,
+            players: vec![Player {
+                display: String::from("Player 1"),
                 cards: vec![
-                    "2h".to_owned(),
-                    "3h".to_owned(),
-                    "4h".to_owned(),
-                    "5h".to_owned(),
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Spade,
+                    },
                 ],
-            }
-        ];
-        let error = wrong_number_cards(&players_requests, 5).unwrap_err();
-        assert_eq!(error, "expected number of cards per player is 5, 4 provided for player 1");
-    }
+            }],
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Club,
+                },
+            ]),
+        };
 
-    #[test]
-    fn test_ok() {
-        let players_requests = vec![
-            PlayerRequest {
-                display: "player 1".to_owned(),
-                cards: vec![
-                    "2h".to_owned(),
-                    "3h".to_owned(),
-                    "4h".to_owned(),
-                    "5h".to_owned(),
-                    "6h".to_owned(),
-                ],
-            },
-            PlayerRequest {
-                display: "player 2".to_owned(),
-                cards: vec![
-                    "2d".to_owned(),
-                    "3d".to_owned(),
-                    "4d".to_owned(),
-                    "5d".to_owned(),
-                    "6d".to_owned(),
-                ],
-            },
-        ];
-        assert_eq!(general_validate(&players_requests), Ok(()));
+        let error = validate(&hand).unwrap_err();
+        assert_eq!(
+            error,
+            "Expected number of cards per player is 2 for Texas hold 'em, 3 provided for Player 1"
+        );
     }
 }
