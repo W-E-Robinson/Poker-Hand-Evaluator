@@ -1,3 +1,4 @@
+mod display;
 mod evaluation;
 mod validation;
 
@@ -165,23 +166,23 @@ impl Card {
             if plural { plural_addition } else { "" }
         )
     }
-}
 
-// fn binary_value(&self) -> usize {
-//     match self.rank {
-//         Rank::Ace => 1,
-//         Rank::Two => 2,
-//         Rank::Three => 4,
-//         Rank::Four => 8,
-//         Rank::Five => 16,
-//         Rank::Six => 32,
-//         Rank::Seven => 64,
-//         Rank::Eight => 128,
-//         Rank::Nine => 256,
-//         Rank::Ten => 512,
-//         Rank::Jack => 1024,
-//         Rank::Queen => 2048,
-//         Rank::King => 4096,
-//         Rank::Ace => 8192,
-//     }
-// }
+    fn binary_value(&self) -> usize {
+        match self.rank {
+            Rank::Ace => 1,
+            Rank::Two => 2,
+            Rank::Three => 4,
+            Rank::Four => 8,
+            Rank::Five => 16,
+            Rank::Six => 32,
+            Rank::Seven => 64,
+            Rank::Eight => 128,
+            Rank::Nine => 256,
+            Rank::Ten => 512,
+            Rank::Jack => 1024,
+            Rank::Queen => 2048,
+            Rank::King => 4096,
+            Rank::Ace => 8192,
+        }
+    }
+}

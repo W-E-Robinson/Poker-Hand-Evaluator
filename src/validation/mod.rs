@@ -345,5 +345,39 @@ mod tests {
         );
     }
 
-    // add test case, expect to be okay
+    #[test]
+    fn test_ok_when_supplied_hand_is_valid_five_card_draw() {
+        let hand = Hand {
+            variant: Variant::FiveCardDraw,
+            players: vec![Player {
+                name: String::from("Player 1"),
+                cards: vec![
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Spade,
+                    },
+                    Card {
+                        rank: Rank::Queen,
+                        suit: Suit::Spade,
+                    },
+                    Card {
+                        rank: Rank::Jack,
+                        suit: Suit::Spade,
+                    },
+                ],
+            }],
+            board: None,
+        };
+
+        let result = validate(&hand);
+        assert!(result.is_ok());
+    }
 }
