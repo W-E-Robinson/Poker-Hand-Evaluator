@@ -1,14 +1,10 @@
+mod evaluation;
 mod validation;
 
+use crate::evaluation::evaluation;
 use crate::validation::validate;
 
-pub fn evaluate(hand: Hand) -> Result<(), String> {
-    validate(&hand)?;
-
-    Ok(())
-}
-
-#[derive(Eq, Hash, PartialEq, Clone)]
+#[derive(Eq, Hash, PartialEq, Clone, Debug)]
 enum Rank {
     Two,
     Three,
@@ -25,7 +21,7 @@ enum Rank {
     Ace,
 }
 
-#[derive(Eq, Hash, PartialEq, Clone)]
+#[derive(Eq, Hash, PartialEq, Clone, Debug)]
 enum Suit {
     Heart,
     Diamond,
@@ -33,26 +29,49 @@ enum Suit {
     Spade,
 }
 
-#[derive(Eq, Hash, PartialEq, Clone)]
+#[derive(Eq, Hash, PartialEq, Clone, Debug)]
 struct Card {
     rank: Rank,
     suit: Suit,
 }
 
+#[derive(Debug, PartialEq)]
 struct Player {
-    display: String,
+    name: String,
     cards: Vec<Card>,
 }
 
+#[derive(Debug, PartialEq)]
 enum Variant {
     FiveCardDraw,
     TexasHoldem,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Hand {
     variant: Variant,
     players: Vec<Player>,
     board: Option<Vec<Card>>,
+}
+
+#[derive(Debug, PartialEq)]
+struct PlayerEval {
+    name: String,
+    cards: Vec<Card>,
+    winner: bool,
+    display: String,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Evaluation {
+    variant: Variant,
+    players: Vec<PlayerEval>,
+    board: Option<Vec<Card>>,
+}
+
+pub fn evaluate(hand: Hand) -> Result<Evaluation, String> {
+    validate(&hand)?;
+    Ok(evaluation(hand))
 }
 
 impl Hand {
@@ -123,28 +142,31 @@ impl Suit {
 }
 
 impl Card {
-    fn to_card_string(self) -> String {
-        format!("{} of {}s", self.rank.to_string(), self.suit.to_string())
+    fn to_card_string(&self) -> String {
+        format!(
+            "{} of {}s",
+            self.clone().rank.to_string(),
+            self.clone().suit.to_string()
+        )
     }
 
-    fn to_rank_string(self, plural: bool) -> String {
-        format!("{}{}", self.rank.to_string(), if plural { "s" } else { "" })
+    fn to_rank_string(&self, plural: bool) -> String {
+        let plural_addition;
+
+        if self.clone().rank == Rank::Six {
+            plural_addition = "es";
+        } else {
+            plural_addition = "s"
+        }
+
+        format!(
+            "{}{}",
+            self.clone().rank.to_string(),
+            if plural { plural_addition } else { "" }
+        )
     }
 }
 
-// Rank::Two => format!("Two{}", if plural { "s" } else { "" }),
-// Rank::Three => format!("Three{}", if plural { "s" } else { "" }),
-// Rank::Four => format!("Four{}", if plural { "s" } else { "" }),
-// Rank::Five => format!("Five{}", if plural { "s" } else { "" }),
-// Rank::Six => format!("Six{}", if plural { "es" } else { "" }),
-// Rank::Seven => format!("Seven{}", if plural { "s" } else { "" }),
-// Rank::Eight => format!("Eight{}", if plural { "s" } else { "" }),
-// Rank::Nine => format!("Nine{}", if plural { "s" } else { "" }),
-// Rank::Ten => format!("Ten{}", if plural { "s" } else { "" }),
-// Rank::Jack => format!("Jack{}", if plural { "s" } else { "" }),
-// Rank::Queen => format!("Queen{}", if plural { "s" } else { "" }),
-// Rank::King => format!("King{}", if plural { "s" } else { "" }),
-// Rank::Ace => format!("Ace{}", if plural { "s" } else { "" }),
 // fn binary_value(&self) -> usize {
 //     match self.rank {
 //         Rank::Ace => 1,
@@ -163,14 +185,3 @@ impl Card {
 //         Rank::Ace => 8192,
 //     }
 // }
-// pub fn evaluate(request: EvaluationRequest) -> Result<EvaluationResponse, String> {
-// NOTE: this needs full testing = all impls below
-// let transformed_players = transform(request.players).map_err(|err| err); // NOTE: returning?
-// NOTE: attach variant back on + rest of response
-// let evaluation = match request.variant.as_str() {
-//     "five_card_draw" => evaluation::five_card_draw::evaluate(transformed_players),
-//     _ => Err(String::from(format!(
-//         "Evaluation error: poker variant not is supported <{}>",
-//         request.variant // NOTE: return error
-//     ))),
-// };

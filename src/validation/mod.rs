@@ -20,10 +20,7 @@ fn validate_no_repeated_cards(hand: &Hand) -> Result<(), String> {
             if given_cards.get(card) == None {
                 given_cards.insert(card.clone());
             } else {
-                return Err(String::from(format!(
-                    "Repeated card: {}",
-                    card.clone().to_card_string()
-                )));
+                return Err(format!("Repeated card: {}", card.clone().to_card_string()));
             }
         }
     }
@@ -35,19 +32,19 @@ fn validate_board(hand: &Hand) -> Result<(), String> {
     match hand.variant {
         Variant::FiveCardDraw => {
             if hand.board.is_some() {
-                return Err(String::from(format!(
+                return Err(format!(
                     "There should be no board for {}",
                     hand.variant.to_string(),
-                )));
+                ));
             }
         }
         Variant::TexasHoldem => {
             if hand.board_len() != hand.variant.number_board_cards() {
-                return Err(String::from(format!(
+                return Err(format!(
                     "The board must be {} cards long for {}",
                     hand.variant.number_board_cards(),
                     hand.variant.to_string(),
-                )));
+                ));
             }
         }
     }
@@ -64,10 +61,10 @@ fn validate_number_players(hand: &Hand) -> Result<(), String> {
         / hand.variant.number_player_cards();
     let number_players = hand.players.iter().len();
     if number_players > max_players {
-        return Err(String::from(format!(
+        return Err(format!(
             "Maximum number of players is {}, {} provided",
             max_players, number_players,
-        )));
+        ));
     }
 
     Ok(())
@@ -77,13 +74,10 @@ fn validate_players_displays(hand: &Hand) -> Result<(), String> {
     let mut displays: HashSet<String> = HashSet::new();
 
     for player in hand.players.iter() {
-        if displays.get(&player.display) == None {
-            displays.insert(player.display.clone());
+        if displays.get(&player.name) == None {
+            displays.insert(player.name.clone());
         } else {
-            return Err(String::from(format!(
-                "Repeated player display: {}",
-                player.display,
-            )));
+            return Err(format!("Repeated player display: {}", player.name,));
         }
     }
 
@@ -94,13 +88,13 @@ fn validate_players_cards(hand: &Hand) -> Result<(), String> {
     let expected_number_cards = hand.variant.number_player_cards();
     for player in hand.players.iter() {
         if player.cards.len() != expected_number_cards {
-            return Err(String::from(format!(
+            return Err(format!(
                 "Expected number of cards per player is {} for {}, {} provided for {}",
                 expected_number_cards,
                 hand.variant.to_string(),
                 player.cards.len(),
-                player.display,
-            )));
+                player.name,
+            ));
         }
     }
 
@@ -118,7 +112,7 @@ mod tests {
         let hand = Hand {
             variant: Variant::FiveCardDraw,
             players: vec![Player {
-                display: String::from("Player 1"),
+                name: String::from("Player 1"),
                 cards: vec![
                     Card {
                         rank: Rank::Ace,
@@ -154,7 +148,7 @@ mod tests {
         let hand = Hand {
             variant: Variant::FiveCardDraw,
             players: vec![Player {
-                display: String::from("Player 1"),
+                name: String::from("Player 1"),
                 cards: vec![
                     Card {
                         rank: Rank::Ace,
@@ -193,7 +187,7 @@ mod tests {
         let hand = Hand {
             variant: Variant::TexasHoldem,
             players: vec![Player {
-                display: String::from("Player 1"),
+                name: String::from("Player 1"),
                 cards: vec![
                     Card {
                         rank: Rank::Ace,
@@ -245,7 +239,7 @@ mod tests {
             variant: Variant::TexasHoldem,
             players: vec![
                 Player {
-                    display: String::from("Player 1"),
+                    name: String::from("Player 1"),
                     cards: vec![
                         Card {
                             rank: Rank::Ace,
@@ -258,7 +252,7 @@ mod tests {
                     ],
                 },
                 Player {
-                    display: String::from("Player 1"),
+                    name: String::from("Player 1"),
                     cards: vec![
                         Card {
                             rank: Rank::Queen,
@@ -304,7 +298,7 @@ mod tests {
         let hand = Hand {
             variant: Variant::TexasHoldem,
             players: vec![Player {
-                display: String::from("Player 1"),
+                name: String::from("Player 1"),
                 cards: vec![
                     Card {
                         rank: Rank::Ace,
@@ -350,4 +344,6 @@ mod tests {
             "Expected number of cards per player is 2 for Texas hold 'em, 3 provided for Player 1"
         );
     }
+
+    // add test case, expect to be okay
 }
