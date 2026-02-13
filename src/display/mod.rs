@@ -1,6 +1,6 @@
 use crate::{Card, Rank};
 
-enum HandRank<'a> {
+pub enum HandRank<'a> {
     HighCard {
         high_card: &'a Card,
         first_kicker: &'a Card,
@@ -49,7 +49,56 @@ enum HandRank<'a> {
     },
 }
 
+// NOTE: maybe this goes into a hand rank mod or seomthing? not just display now
 impl<'a> HandRank<'a> {
+    pub fn rank_number(&self) -> usize {
+        match self {
+            HandRank::HighCard {
+                high_card: _,
+                first_kicker: _,
+                second_kicker: _,
+                third_kicker: _,
+                fourth_kicker: _,
+            } => 0,
+            HandRank::Pair {
+                pair: _,
+                first_kicker: _,
+                second_kicker: _,
+                third_kicker: _,
+            } => 1,
+            HandRank::TwoPair {
+                high_pair: _,
+                low_pair: _,
+                kicker: _,
+            } => 2,
+            HandRank::ThreeOfAKind {
+                trips: _,
+                first_kicker: _,
+                second_kicker: _,
+            } => 3,
+            HandRank::Straight {
+                high_card: _,
+                low_card: _,
+            } => 4,
+            HandRank::Flush {
+                first_card: _,
+                second_card: _,
+                third_card: _,
+                fourth_card: _,
+                fifth_card: _,
+            } => 5,
+            HandRank::FullHouse { trips: _, pair: _ } => 6,
+            HandRank::FourOfAKind {
+                quads: _,
+                kicker: _,
+            } => 7,
+            HandRank::StraightFlush {
+                high_card: _,
+                low_card: _,
+            } => 8,
+        }
+    }
+
     fn to_display(&self) -> String {
         match self {
             HandRank::HighCard {
