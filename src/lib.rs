@@ -1,7 +1,9 @@
 mod evaluation;
+mod types;
+mod validation;
 
 // pub fn evaluate(request: EvaluationRequest) -> Result<EvaluationResponse, String> {
-pub fn evaluate(request: EvaluationRequest) {
+/* pub fn evaluate(request: EvaluationRequest) {
     if let Err(e) = validate(&request) {
         println!("Validation failed: {}", e); // NOTE: don't print Err, return
     }
@@ -16,9 +18,10 @@ pub fn evaluate(request: EvaluationRequest) {
     //         request.variant // NOTE: return error
     //     ))),
     // };
-}
+} */
 
 pub struct PlayerRequest {
+    // NOTE: move to a types.rs / structures.rs
     display: String,
     cards: Vec<String>,
 }
@@ -31,6 +34,7 @@ pub struct TransformedPlayerRequest {
 
 // NOTE: where should various structs/enums live?
 pub struct EvaluationRequest {
+    // NOTE: have all structs here?
     variant: String,
     players: Vec<PlayerRequest>,
 }

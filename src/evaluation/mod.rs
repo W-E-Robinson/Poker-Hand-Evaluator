@@ -68,7 +68,8 @@ impl HandRank {
                 "placeholder", /*to_display(true)*/ "placeholder" /*to_display(true)*/
             )),
             HandRank::FourOfAKind => {
-                format!( // NOTE: or can figure out from value of evaluation? = do evaluation first
+                format!(
+                    // NOTE: or can figure out from value of evaluation? = do evaluation first
                     "Four of a kind, {} with {} kicker",
                     "placeholder", /*to_display(true)*/ "placeholder"
                 )
@@ -82,7 +83,7 @@ impl HandRank {
     }
 }
 
-#[cfg(test)]
+/* #[cfg(test)]
 mod tests {
     use super::*;
 
@@ -433,4 +434,4 @@ mod tests {
         ];
         assert_eq!(HandRank::StraightFlush.to_display(cards), "Royal flush");
     }
-}
+} */

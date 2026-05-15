@@ -1,4 +1,6 @@
 pub mod five_card_draw;
+pub mod general;
+
 use std::collections::HashSet;
 
 use crate::{Card, PlayerRequest};
@@ -198,19 +200,20 @@ mod tests {
 
     #[test]
     fn test_errors_wrong_number_cards() {
-        let players_requests = vec![
-            PlayerRequest {
-                display: "player 1".to_owned(),
-                cards: vec![
-                    "2h".to_owned(),
-                    "3h".to_owned(),
-                    "4h".to_owned(),
-                    "5h".to_owned(),
-                ],
-            }
-        ];
+        let players_requests = vec![PlayerRequest {
+            display: "player 1".to_owned(),
+            cards: vec![
+                "2h".to_owned(),
+                "3h".to_owned(),
+                "4h".to_owned(),
+                "5h".to_owned(),
+            ],
+        }];
         let error = wrong_number_cards(&players_requests, 5).unwrap_err();
-        assert_eq!(error, "expected number of cards per player is 5, 4 provided for player 1");
+        assert_eq!(
+            error,
+            "expected number of cards per player is 5, 4 provided for player 1"
+        );
     }
 
     #[test]
