@@ -75,6 +75,7 @@ pub struct Player {
 }
 
 pub enum Variant {
+    // NOTE: all variant impls testing needed
     FiveCardDraw,
 }
 impl fmt::Display for Variant {
@@ -92,6 +93,9 @@ pub struct Hand {
     pub variant: Variant,
     pub players: Vec<Player>,
     pub board: Option<Vec<Card>>,
+    pub burn_cards: Option<Vec<Card>>,
+    pub discarded_cards: Option<Vec<Card>>,
+    pub remaining_deck: Vec<Card>,
 }
 
 #[cfg(test)]

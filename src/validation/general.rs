@@ -2,6 +2,28 @@ use std::collections::HashSet;
 
 use crate::types::{Card, Hand, Variant};
 
+/*
+ * so i just realised ive messed validation up,
+ * so file structure is mod.rs which has the top level singular validation function,
+ * whcih runs for all. each validation function just detects and uses variant information,
+ * no params being passed in. and then a file name for each function.
+ * I need to know for cards = players cards,Op(board),Op(burns),
+ * Op(discard),remain_deck(can be zero ofc)
+ * validation functions in turn, below is function in mod:
+pub fn validate(hand: &Hand) -> Result<(), String> {
+    validate_hand_properties(&hand)?;
+    validate_number_total_cards(&hand)?;
+    validate_no_repeated_cards(&hand)?;
+    validate_number_player_cards(&hand)?;
+    validate_number_board_cards(&hand)?;
+    validate_number_burn_cards(&hand)?;
+    validate_remainder_cards(&hand)?;
+    validate_unique_player_ids(&hand)?;
+
+    Ok(())
+}
+*/
+
 fn validate_no_repeated_cards(hand: &Hand) -> Result<(), String> {
     let mut given_cards: HashSet<Card> = HashSet::new();
     let mut repeated_cards: HashSet<Card> = HashSet::new();
@@ -17,12 +39,40 @@ fn validate_no_repeated_cards(hand: &Hand) -> Result<(), String> {
     }
 
     if let Some(board) = &hand.board {
+        // NOTE: test
         for card in board {
             if !given_cards.insert(card.clone()) {
                 repeated_cards.insert(card.clone());
             }
         }
     }
+
+    if let Some(burn_cards) = &hand.burn_cards {
+        // NOTE: test
+        for card in burn_cards {
+            if !given_cards.insert(card.clone()) {
+                repeated_cards.insert(card.clone());
+            }
+        }
+    }
+
+    if let Some(discarded_cards) = &hand.discarded_cards {
+        // NOTE: test
+        for card in discarded_cards {
+            if !given_cards.insert(card.clone()) {
+                repeated_cards.insert(card.clone());
+            }
+        }
+    }
+
+    for card in hand.remaining_deck.iter() {
+        // NOTE: test
+        if !given_cards.insert(card.clone()) {
+            repeated_cards.insert(card.clone());
+        }
+    }
+
+    // also check cards length of deck? depends on variant?
 
     if repeated_cards.is_empty() {
         Ok(())
