@@ -77,6 +77,15 @@ pub struct Player {
 pub enum Variant {
     FiveCardDraw,
 }
+impl fmt::Display for Variant {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let display_string = match self {
+            Variant::FiveCardDraw => "Five-card draw",
+        };
+
+        write!(f, "{}", display_string)
+    }
+}
 
 pub struct Hand {
     pub id: String,
