@@ -1,30 +1,8 @@
 use std::collections::HashSet;
 
-use crate::types::{Card, Hand, Variant};
+use crate::types::{Card, Hand};
 
-/*
- * so i just realised ive messed validation up,
- * so file structure is mod.rs which has the top level singular validation function,
- * whcih runs for all. each validation function just detects and uses variant information,
- * no params being passed in. and then a file name for each function.
- * I need to know for cards = players cards,Op(board),Op(burns),
- * Op(discard),remain_deck(can be zero ofc)
- * validation functions in turn, below is function in mod:
-pub fn validate(hand: &Hand) -> Result<(), String> {
-    validate_hand_properties(&hand)?;
-    validate_number_total_cards(&hand)?;
-    validate_no_repeated_cards(&hand)?;
-    validate_number_player_cards(&hand)?;
-    validate_number_board_cards(&hand)?;
-    validate_number_burn_cards(&hand)?;
-    validate_remainder_cards(&hand)?;
-    validate_unique_player_ids(&hand)?;
-
-    Ok(())
-}
-*/
-
-fn validate_no_repeated_cards(hand: &Hand) -> Result<(), String> {
+pub fn validate_no_repeated_cards(hand: &Hand) -> Result<(), String> {
     let mut given_cards: HashSet<Card> = HashSet::new();
     let mut repeated_cards: HashSet<Card> = HashSet::new();
 
@@ -39,7 +17,6 @@ fn validate_no_repeated_cards(hand: &Hand) -> Result<(), String> {
     }
 
     if let Some(board) = &hand.board {
-        // NOTE: test
         for card in board {
             if !given_cards.insert(card.clone()) {
                 repeated_cards.insert(card.clone());
@@ -48,7 +25,6 @@ fn validate_no_repeated_cards(hand: &Hand) -> Result<(), String> {
     }
 
     if let Some(burn_cards) = &hand.burn_cards {
-        // NOTE: test
         for card in burn_cards {
             if !given_cards.insert(card.clone()) {
                 repeated_cards.insert(card.clone());
@@ -57,7 +33,6 @@ fn validate_no_repeated_cards(hand: &Hand) -> Result<(), String> {
     }
 
     if let Some(discarded_cards) = &hand.discarded_cards {
-        // NOTE: test
         for card in discarded_cards {
             if !given_cards.insert(card.clone()) {
                 repeated_cards.insert(card.clone());
@@ -66,13 +41,10 @@ fn validate_no_repeated_cards(hand: &Hand) -> Result<(), String> {
     }
 
     for card in hand.remaining_deck.iter() {
-        // NOTE: test
         if !given_cards.insert(card.clone()) {
             repeated_cards.insert(card.clone());
         }
     }
-
-    // also check cards length of deck? depends on variant?
 
     if repeated_cards.is_empty() {
         Ok(())
@@ -84,21 +56,6 @@ fn validate_no_repeated_cards(hand: &Hand) -> Result<(), String> {
     }
 }
 
-fn validate_board(hand: &Hand) -> Result<(), String> {
-    match hand.variant {
-        Variant::FiveCardDraw => {
-            if hand.board.is_some() {
-                return Err(format!(
-                    "There should be no board for {}",
-                    hand.variant.to_string(),
-                ));
-            }
-        }
-    }
-
-    Ok(())
-}
-
 #[cfg(test)]
 mod tests {
     use crate::types::{Player, Rank, Suit, Variant};
@@ -106,7 +63,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_validation_error_on_repeated_cards_five_card_draw() {
+    fn test_error_repeated_cards_five_card_draw() {
         let hand = Hand {
             id: String::from("hand-id"),
             variant: Variant::FiveCardDraw,
@@ -163,6 +120,12 @@ mod tests {
                 },
             ],
             board: None,
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Ten,
+                suit: Suit::Heart,
+            }],
         };
 
         let result = validate_no_repeated_cards(&hand).unwrap_err();
@@ -173,7 +136,7 @@ mod tests {
     }
 
     #[test]
-    fn test_valid_when_no_repeated_cards_five_card_draw() {
+    fn test_valid_no_repeated_cards_five_card_draw() {
         let hand = Hand {
             id: String::from("hand-id"),
             variant: Variant::FiveCardDraw,
@@ -230,104 +193,15 @@ mod tests {
                 },
             ],
             board: None,
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Ten,
+                suit: Suit::Diamond,
+            }],
         };
 
         let result = validate_no_repeated_cards(&hand);
-        assert!(result.is_ok());
-    }
-
-    #[test]
-    fn test_valid_when_no_board_given_five_card_draw() {
-        let hand = Hand {
-            id: String::from("hand-id"),
-            variant: Variant::FiveCardDraw,
-            players: vec![Player {
-                id: String::from("player-1-id"),
-                cards: vec![
-                    Card {
-                        rank: Rank::Ace,
-                        suit: Suit::Heart,
-                    },
-                    Card {
-                        rank: Rank::King,
-                        suit: Suit::Heart,
-                    },
-                    Card {
-                        rank: Rank::Queen,
-                        suit: Suit::Heart,
-                    },
-                    Card {
-                        rank: Rank::Jack,
-                        suit: Suit::Heart,
-                    },
-                    Card {
-                        rank: Rank::Ten,
-                        suit: Suit::Heart,
-                    },
-                ],
-            }],
-            board: None,
-        };
-
-        let result = validate_board(&hand);
-        assert!(result.is_ok());
-    }
-
-    #[test]
-    fn test_invalid_when_board_given_five_card_draw() {
-        let hand = Hand {
-            id: String::from("hand-id"),
-            variant: Variant::FiveCardDraw,
-            players: vec![Player {
-                id: String::from("player-1-id"),
-                cards: vec![
-                    Card {
-                        rank: Rank::Ace,
-                        suit: Suit::Heart,
-                    },
-                    Card {
-                        rank: Rank::King,
-                        suit: Suit::Heart,
-                    },
-                    Card {
-                        rank: Rank::Queen,
-                        suit: Suit::Heart,
-                    },
-                    Card {
-                        rank: Rank::Jack,
-                        suit: Suit::Heart,
-                    },
-                    Card {
-                        rank: Rank::Ten,
-                        suit: Suit::Heart,
-                    },
-                ],
-            }],
-            board: Some(vec![
-                Card {
-                    rank: Rank::Ace,
-                    suit: Suit::Heart,
-                },
-                Card {
-                    rank: Rank::King,
-                    suit: Suit::Heart,
-                },
-                Card {
-                    rank: Rank::Queen,
-                    suit: Suit::Heart,
-                },
-                Card {
-                    rank: Rank::Jack,
-                    suit: Suit::Heart,
-                },
-                Card {
-                    rank: Rank::Ten,
-                    suit: Suit::Heart,
-                },
-            ]),
-        };
-
-        let result = validate_board(&hand).unwrap_err();
-        assert_eq!(result, "There should be no board for Five-card draw");
+        assert!(result.is_ok(),);
     }
 }
