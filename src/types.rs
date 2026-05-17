@@ -86,6 +86,13 @@ impl fmt::Display for Variant {
         write!(f, "{}", display_string)
     }
 }
+impl Variant {
+    pub fn cards_per_player(&self) -> usize {
+        match self {
+            Variant::FiveCardDraw => 5,
+        }
+    }
+}
 
 pub struct Hand {
     pub id: String,
@@ -573,5 +580,11 @@ mod tests {
     fn test_variant_impl_to_string_five_card_draw() {
         let variant = Variant::FiveCardDraw;
         assert_eq!(variant.to_string(), "Five-card draw");
+    }
+
+    #[test]
+    fn test_variant_impl_cards_per_player_five_card_draw() {
+        let variant = Variant::FiveCardDraw;
+        assert_eq!(variant.cards_per_player(), 5);
     }
 }
