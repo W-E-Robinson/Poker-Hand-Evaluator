@@ -109,6 +109,31 @@ pub struct Hand {
     pub remaining_deck: Vec<Card>,
 }
 
+#[derive(Debug)]
+pub struct PlayerEval {
+    pub id: String,
+    pub hand_ranking: String,
+    pub winner: bool,
+}
+
+#[derive(Debug)]
+pub struct Evaluation {
+    pub id: String,
+    pub players: Vec<PlayerEval>,
+}
+
+#[derive(Debug, PartialEq)]
+pub enum ErrorType {
+    Validation,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Error {
+    pub id: String,
+    pub error_type: ErrorType,
+    pub message: String,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
