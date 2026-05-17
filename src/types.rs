@@ -75,7 +75,6 @@ pub struct Player {
 }
 
 pub enum Variant {
-    // NOTE: all variant impls testing needed
     FiveCardDraw,
 }
 impl fmt::Display for Variant {
@@ -568,5 +567,11 @@ mod tests {
             suit: Suit::Diamond,
         };
         assert_eq!(card.to_string(), "Ace of Diamonds");
+    }
+
+    #[test]
+    fn test_variant_impl_to_string_five_card_draw() {
+        let variant = Variant::FiveCardDraw;
+        assert_eq!(variant.to_string(), "Five-card draw");
     }
 }
