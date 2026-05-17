@@ -92,6 +92,11 @@ impl Variant {
             Variant::FiveCardDraw => 5,
         }
     }
+    pub fn num_board_cards(&self) -> Option<usize> {
+        match self {
+            Variant::FiveCardDraw => None,
+        }
+    }
 }
 
 pub struct Hand {
@@ -586,5 +591,11 @@ mod tests {
     fn test_variant_impl_cards_per_player_five_card_draw() {
         let variant = Variant::FiveCardDraw;
         assert_eq!(variant.cards_per_player(), 5);
+    }
+
+    #[test]
+    fn test_variant_impl_num_board_cards_five_card_draw() {
+        let variant = Variant::FiveCardDraw;
+        assert_eq!(variant.num_board_cards(), None);
     }
 }
