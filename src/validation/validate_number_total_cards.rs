@@ -1,6 +1,4 @@
-use crate::types::Hand;
-
-const NUMBER_CARDS_DECK: usize = 52;
+use crate::{constants::NUMBER_CARDS_DECK, types::Hand};
 
 pub fn validate_number_total_cards(hand: &Hand) -> Result<(), String> {
     let mut total_num_cards = 0;

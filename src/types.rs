@@ -1,5 +1,7 @@
 use std::fmt;
 
+use crate::constants::{NUMBER_RANKS};
+
 #[derive(Eq, Hash, PartialEq, Clone)]
 pub enum Rank {
     Two,
@@ -66,6 +68,34 @@ pub struct Card {
 impl fmt::Display for Card {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{} of {}s", self.rank.to_string(), self.suit.to_string())
+    }
+}
+impl Card {
+    pub fn matrix_value(&self) -> usize {
+        let rank_value = match self.rank {
+            Rank::Two => 0,
+            Rank::Three => 1,
+            Rank::Four => 2,
+            Rank::Five => 3,
+            Rank::Six => 4,
+            Rank::Seven => 5,
+            Rank::Eight => 6,
+            Rank::Nine => 7,
+            Rank::Ten => 8,
+            Rank::Jack => 9,
+            Rank::Queen => 10,
+            Rank::King => 11,
+            Rank::Ace => 12,
+        };
+
+        let suit_multiplier = match self.suit {
+            Suit::Club => 0,
+            Suit::Diamond => 1,
+            Suit::Heart => 2,
+            Suit::Spade => 3,
+        };
+
+        rank_value + (suit_multiplier * NUMBER_RANKS)
     }
 }
 
@@ -604,6 +634,474 @@ mod tests {
             suit: Suit::Diamond,
         };
         assert_eq!(card.to_string(), "Ace of Diamonds");
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_two_club() {
+        let card = Card {
+            rank: Rank::Two,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 0);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_three_club() {
+        let card = Card {
+            rank: Rank::Three,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 1);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_four_club() {
+        let card = Card {
+            rank: Rank::Four,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 2);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_five_club() {
+        let card = Card {
+            rank: Rank::Five,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 3);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_six_club() {
+        let card = Card {
+            rank: Rank::Six,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 4);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_seven_club() {
+        let card = Card {
+            rank: Rank::Seven,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 5);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_eight_club() {
+        let card = Card {
+            rank: Rank::Eight,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 6);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_nine_club() {
+        let card = Card {
+            rank: Rank::Nine,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 7);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_ten_club() {
+        let card = Card {
+            rank: Rank::Ten,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 8);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_jack_club() {
+        let card = Card {
+            rank: Rank::Jack,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 9);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_queen_club() {
+        let card = Card {
+            rank: Rank::Queen,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 10);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_king_club() {
+        let card = Card {
+            rank: Rank::King,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 11);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_ace_club() {
+        let card = Card {
+            rank: Rank::Ace,
+            suit: Suit::Club,
+        };
+        assert_eq!(card.matrix_value(), 12);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_two_diamond() {
+        let card = Card {
+            rank: Rank::Two,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 13);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_three_diamond() {
+        let card = Card {
+            rank: Rank::Three,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 14);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_four_diamond() {
+        let card = Card {
+            rank: Rank::Four,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 15);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_five_diamond() {
+        let card = Card {
+            rank: Rank::Five,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 16);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_six_diamond() {
+        let card = Card {
+            rank: Rank::Six,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 17);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_seven_diamond() {
+        let card = Card {
+            rank: Rank::Seven,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 18);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_eight_diamond() {
+        let card = Card {
+            rank: Rank::Eight,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 19);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_nine_diamond() {
+        let card = Card {
+            rank: Rank::Nine,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 20);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_ten_diamond() {
+        let card = Card {
+            rank: Rank::Ten,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 21);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_jack_diamond() {
+        let card = Card {
+            rank: Rank::Jack,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 22);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_queen_diamond() {
+        let card = Card {
+            rank: Rank::Queen,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 23);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_king_diamond() {
+        let card = Card {
+            rank: Rank::King,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 24);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_ace_diamond() {
+        let card = Card {
+            rank: Rank::Ace,
+            suit: Suit::Diamond,
+        };
+        assert_eq!(card.matrix_value(), 25);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_two_heart() {
+        let card = Card {
+            rank: Rank::Two,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 26);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_three_heart() {
+        let card = Card {
+            rank: Rank::Three,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 27);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_four_heart() {
+        let card = Card {
+            rank: Rank::Four,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 28);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_five_heart() {
+        let card = Card {
+            rank: Rank::Five,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 29);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_six_heart() {
+        let card = Card {
+            rank: Rank::Six,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 30);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_seven_heart() {
+        let card = Card {
+            rank: Rank::Seven,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 31);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_eight_heart() {
+        let card = Card {
+            rank: Rank::Eight,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 32);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_nine_heart() {
+        let card = Card {
+            rank: Rank::Nine,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 33);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_ten_heart() {
+        let card = Card {
+            rank: Rank::Ten,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 34);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_jack_heart() {
+        let card = Card {
+            rank: Rank::Jack,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 35);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_queen_heart() {
+        let card = Card {
+            rank: Rank::Queen,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 36);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_king_heart() {
+        let card = Card {
+            rank: Rank::King,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 37);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_ace_heart() {
+        let card = Card {
+            rank: Rank::Ace,
+            suit: Suit::Heart,
+        };
+        assert_eq!(card.matrix_value(), 38);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_two_spade() {
+        let card = Card {
+            rank: Rank::Two,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 39);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_three_spade() {
+        let card = Card {
+            rank: Rank::Three,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 40);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_four_spade() {
+        let card = Card {
+            rank: Rank::Four,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 41);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_five_spade() {
+        let card = Card {
+            rank: Rank::Five,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 42);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_six_spade() {
+        let card = Card {
+            rank: Rank::Six,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 43);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_seven_spade() {
+        let card = Card {
+            rank: Rank::Seven,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 44);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_eight_spade() {
+        let card = Card {
+            rank: Rank::Eight,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 45);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_nine_spade() {
+        let card = Card {
+            rank: Rank::Nine,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 46);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_ten_spade() {
+        let card = Card {
+            rank: Rank::Ten,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 47);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_jack_spade() {
+        let card = Card {
+            rank: Rank::Jack,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 48);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_queen_spade() {
+        let card = Card {
+            rank: Rank::Queen,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 49);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_king_spade() {
+        let card = Card {
+            rank: Rank::King,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 50);
+    }
+
+    #[test]
+    fn test_card_impl_matric_value_ace_spade() {
+        let card = Card {
+            rank: Rank::Ace,
+            suit: Suit::Spade,
+        };
+        assert_eq!(card.matrix_value(), 51);
     }
 
     #[test]
