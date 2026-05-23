@@ -1,147 +1,312 @@
+use crate::{
+    evaluation::evaluate,
+    types::{Error, ErrorType, Evaluation, Hand},
+    validation::validate,
+};
+
+mod constants;
 mod evaluation;
+mod types;
+mod validation;
 
-// pub fn evaluate(request: EvaluationRequest) -> Result<EvaluationResponse, String> {
-pub fn evaluate(request: EvaluationRequest) {
-    if let Err(e) = validate(&request) {
-        println!("Validation failed: {}", e); // NOTE: don't print Err, return
+pub fn evaluate_hand(hand: Hand) -> Result<Evaluation, Error> {
+    if let Err(err) = validate(&hand) {
+        return Err(Error {
+            id: hand.id,
+            error_type: ErrorType::Validation,
+            message: err,
+        });
     }
 
-    let transformed_players = transform(request.players).map_err(|err| err); // NOTE: returning?
-
-    // NOTE: attach variant back on + rest of response
-    // let evaluation = match request.variant.as_str() {
-    //     "five_card_draw" => evaluation::five_card_draw::evaluate(transformed_players),
-    //     _ => Err(String::from(format!(
-    //         "Evaluation error: poker variant not is supported <{}>",
-    //         request.variant // NOTE: return error
-    //     ))),
-    // };
+    Ok(evaluate(hand))
 }
 
-pub struct PlayerRequest {
-    display: String,
-    cards: Vec<String>,
-}
+#[cfg(test)]
+mod tests {
+    use crate::types::{Card, Player, PlayerEval, Rank, Suit, Variant};
 
-// NOTE: offer Card publically? or offer both?
-pub struct TransformedPlayerRequest {
-    display: String,
-    cards: Vec<Card>,
-}
+    use super::*;
 
-// NOTE: where should various structs/enums live?
-pub struct EvaluationRequest {
-    variant: String,
-    players: Vec<PlayerRequest>,
-}
+    #[test]
+    fn test_validation_error() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FiveCardDraw,
+            players: vec![],
+            board: Some(vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Heart,
+            }]),
+            burn_cards: None,
+            discarded_cards: Some(vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Heart,
+            }]),
+            remaining_deck: vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Heart,
+            }],
+        };
 
-// NOTE: make public?
-#[derive(Debug)]
-enum Suit {
-    Heart,
-    Diamond,
-    Club,
-    Spade,
-}
-
-// NOTE: make public?
-#[derive(Debug)]
-enum Rank {
-    Two,
-    Three,
-    Four,
-    Five,
-    Six,
-    Seven,
-    Eight,
-    Nine,
-    Ten,
-    Jack,
-    Queen,
-    King,
-    Ace,
-}
-
-// NOTE: make public?
-pub struct Card {
-    rank: Rank,
-    suit: Suit,
-}
-
-// NOTE: this needs full testing = all impls below
-impl Card {
-    fn from_str(string: &str) -> Result<Self, String> {
-        if string.len() != 2 || !string.is_ascii() {
-            return Err(format!("invalid card string: {}", string));
-        }
-
-        let rank_char = &string[..1];
-        let suit_char = &string[1..2];
-
-        let rank = match rank_char {
-            "2" => Ok(Rank::Two),
-            "3" => Ok(Rank::Three),
-            "4" => Ok(Rank::Four),
-            "5" => Ok(Rank::Five),
-            "6" => Ok(Rank::Six),
-            "7" => Ok(Rank::Seven),
-            "8" => Ok(Rank::Eight),
-            "9" => Ok(Rank::Nine),
-            "T" => Ok(Rank::Ten),
-            "J" => Ok(Rank::Jack),
-            "Q" => Ok(Rank::Queen),
-            "K" => Ok(Rank::King),
-            "A" => Ok(Rank::Ace),
-            _ => Err(format!("invalid rank: {}", rank_char)),
-        }?;
-
-        let suit = match suit_char {
-            "h" => Ok(Suit::Heart),
-            "d" => Ok(Suit::Diamond),
-            "c" => Ok(Suit::Club),
-            "s" => Ok(Suit::Spade),
-            _ => Err(format!("invalid suit: {}", suit_char)),
-        }?;
-
-        Ok(Card { rank, suit })
+        let result = evaluate_hand(hand).unwrap_err();
+        assert_eq!(
+            result,
+            Error {
+                id: String::from("hand-id"),
+                error_type: ErrorType::Validation,
+                message: String::from("At least one player must be provided."),
+            }
+        );
     }
 
-    fn to_display(self, plural: bool) -> String {
-        match self.rank {
-            Rank::Two => format!("Two{}", if plural { "s" } else { "" }),
-            Rank::Three => format!("Three{}", if plural { "s" } else { "" }),
-            Rank::Four => format!("Four{}", if plural { "s" } else { "" }),
-            Rank::Five => format!("Five{}", if plural { "s" } else { "" }),
-            Rank::Six => format!("Six{}", if plural { "es" } else { "" }),
-            Rank::Seven => format!("Seven{}", if plural { "s" } else { "" }),
-            Rank::Eight => format!("Eight{}", if plural { "s" } else { "" }),
-            Rank::Nine => format!("Nine{}", if plural { "s" } else { "" }),
-            Rank::Ten => format!("Ten{}", if plural { "s" } else { "" }),
-            Rank::Jack => format!("Jack{}", if plural { "s" } else { "" }),
-            Rank::Queen => format!("Queen{}", if plural { "s" } else { "" }),
-            Rank::King => format!("King{}", if plural { "s" } else { "" }),
-            Rank::Ace => format!("Ace{}", if plural { "s" } else { "" }),
-            // NOTE: can there be an error? - think all impls
-            // }?;
-        }
+    #[test]
+    fn test_evaluation() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FiveCardDraw,
+            board: None,
+            burn_cards: None,
+            discarded_cards: Some(vec![]),
+            remaining_deck: vec![
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Heart,
+                },
+            ],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ten,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ten,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate_hand(hand),
+            Ok(Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Royal Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Broadway"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Royal Flush"),
+            })
+        );
     }
-
-    // fn binary_value(&self) -> usize {
-    //     match self.rank {
-    //         Rank::Ace => 1,
-    //         Rank::Two => 2,
-    //         Rank::Three => 4,
-    //         Rank::Four => 8,
-    //         Rank::Five => 16,
-    //         Rank::Six => 32,
-    //         Rank::Seven => 64,
-    //         Rank::Eight => 128,
-    //         Rank::Nine => 256,
-    //         Rank::Ten => 512,
-    //         Rank::Jack => 1024,
-    //         Rank::Queen => 2048,
-    //         Rank::King => 4096,
-    //         Rank::Ace => 8192,
-    //     }
-    // }
 }
