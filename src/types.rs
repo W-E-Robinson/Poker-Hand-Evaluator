@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::constants::{NUMBER_RANKS};
+use crate::constants::NUMBER_RANKS;
 
 #[derive(Eq, Hash, PartialEq, Clone)]
 pub enum Rank {
@@ -142,14 +142,15 @@ pub struct Hand {
 #[derive(Debug)]
 pub struct PlayerEval {
     pub id: String,
-    pub hand_ranking: String,
-    pub winner: bool,
+    pub hand: String,
 }
 
 #[derive(Debug)]
 pub struct Evaluation {
     pub id: String,
     pub players: Vec<PlayerEval>,
+    pub winners: Vec<String>,
+    pub winning_hand: String,
 }
 
 #[derive(Debug, PartialEq)]

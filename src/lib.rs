@@ -3,11 +3,12 @@ use crate::{
     validation::validate,
 };
 
+mod constants;
 mod evaluation;
 mod types;
 mod validation;
 
-pub fn evaluate(hand: Hand) -> Result<Evaluation, Error> {
+pub fn evaluate_hand(hand: Hand) -> Result<Evaluation, Error> {
     if let Err(err) = validate(&hand) {
         return Err(Error {
             id: hand.id,
@@ -20,9 +21,10 @@ pub fn evaluate(hand: Hand) -> Result<Evaluation, Error> {
         id: String::from("id"),
         players: vec![PlayerEval {
             id: String::from("id"),
-            hand_ranking: String::from("a hand"),
-            winner: true,
+            hand: String::from("a hand"),
         }],
+        winners: vec![String::from("id")],
+        winning_hand: String::from("a hand"),
     })
 }
 
@@ -53,7 +55,7 @@ mod tests {
             }],
         };
 
-        let result = evaluate(hand).unwrap_err();
+        let result = evaluate_hand(hand).unwrap_err();
         assert_eq!(
             result,
             Error {
