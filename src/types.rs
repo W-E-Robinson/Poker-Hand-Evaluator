@@ -139,13 +139,13 @@ pub struct Hand {
     pub remaining_deck: Vec<Card>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct PlayerEval {
     pub id: String,
     pub hand: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Evaluation {
     pub id: String,
     pub players: Vec<PlayerEval>,

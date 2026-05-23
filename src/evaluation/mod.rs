@@ -3,15 +3,55 @@ use crate::{
         ACE_VALUE, BROADWAY_STRAIGHT_INDICATOR, NUMBER_RANKS, NUMBER_SUITS, RANK_BASE_VALUE,
         WHEEL_STRAIGHT_INDICATOR,
     },
-    types::{Card, Evaluation, PlayerEval},
+    types::{Card, Evaluation, Hand, PlayerEval, Variant},
 };
 
-// NOTE: within eval detect type, then send to 5 card, which in turn just does 5 hi as below, fine
-// for now
-// while do this how structure this? have a 5 card hi file for exmaple? a five card draw file for
-// exmaple? but keep structs/enums here for now? decide pre further testing me thinks? or at least
-// think on, nah make tests then lift and shift lollll
-// pub fn evaluate(hand: &Hand) -> Evaluation {} // NOTE: big testing needed here
+struct PlayerEvaluatedHand {
+    id: String,
+    result: SingleHandEval,
+}
+pub fn evaluate(hand: Hand) -> Evaluation {
+    let hand_evals: Vec<PlayerEvaluatedHand> = hand
+        .players
+        .iter()
+        .map(|player| match hand.variant {
+            Variant::FiveCardDraw => PlayerEvaluatedHand {
+                id: player.id.clone(),
+                result: evaluate_five_cards_hi(&player.cards),
+            },
+        })
+        .collect();
+
+    let max_rank_value = hand_evals
+        .iter()
+        .map(|eval| eval.result.rank_value)
+        .max()
+        .unwrap();
+
+    Evaluation {
+        id: hand.id.clone(),
+        players: hand_evals
+            .iter()
+            .map(|eval| PlayerEval {
+                id: eval.id.clone(),
+                hand: eval.result.hand_description.clone(),
+            })
+            .collect(),
+        winners: hand_evals
+            .iter()
+            .filter_map(|eval| {
+                (eval.result.rank_value == max_rank_value).then_some(eval.id.clone())
+            })
+            .collect(),
+        winning_hand: hand_evals
+            .iter()
+            .find(|eval| eval.result.rank_value == max_rank_value)
+            .unwrap()
+            .result
+            .hand_description
+            .clone(),
+    }
+}
 
 #[derive(Debug, PartialEq)]
 struct SingleHandEval {
@@ -84,7 +124,7 @@ impl HandRanks {
     }
 }
 
-fn evaluate_five_cards_hi(cards: Vec<Card>) -> SingleHandEval {
+fn evaluate_five_cards_hi(cards: &Vec<Card>) -> SingleHandEval {
     let mut suits = [0; NUMBER_SUITS];
     let mut values = [0; NUMBER_RANKS];
 
@@ -155,7 +195,7 @@ fn evaluate_five_cards_hi(cards: Vec<Card>) -> SingleHandEval {
 
 #[cfg(test)]
 mod tests {
-    use crate::types::{Rank, Suit};
+    use crate::types::{Player, Rank, Suit};
 
     use super::*;
 
@@ -572,7 +612,7 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Royal Flush"),
                 rank_value: 9_000_015_872
@@ -605,7 +645,7 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Wheel Flush"),
                 rank_value: 9_000_008_222
@@ -638,7 +678,7 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Straight Flush"),
                 rank_value: 9_000_000_062
@@ -671,7 +711,7 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Four of a Kind"),
                 rank_value: 8_001_048_584
@@ -704,7 +744,7 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Full House"),
                 rank_value: 7_000_524_288
@@ -737,7 +777,7 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Flush"),
                 rank_value: 6_000_009_320
@@ -770,7 +810,7 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Broadway"),
                 rank_value: 5_000_015_872
@@ -803,7 +843,7 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Wheel"),
                 rank_value: 5_000_008_222
@@ -836,7 +876,7 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Straight"),
                 rank_value: 5_000_007_936
@@ -869,7 +909,7 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Three of a Kind"),
                 rank_value: 4_006_292_992
@@ -902,7 +942,7 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Two Pair"),
                 rank_value: 3_012_583_936
@@ -935,7 +975,7 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Pair"),
                 rank_value: 2_008_398_080
@@ -968,10 +1008,95 @@ mod tests {
             },
         ];
         assert_eq!(
-            evaluate_five_cards_hi(cards),
+            evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("High Card"),
                 rank_value: 1_000_009_986
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_five_card_draw_two_player_royal_vs_broadway() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FiveCardDraw,
+            board: None,
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Two,
+                suit: Suit::Club,
+            }],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ten,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ten,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Royal Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Broadway"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Royal Flush"),
             }
         );
     }
