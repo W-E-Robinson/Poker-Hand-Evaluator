@@ -1,20 +1,84 @@
-### NOTES
+## Poker Hand Evaluator
 
-lib = just cargo test
-server = cargo run --bin server
-NOTE: nextest?
+### Contents
+- [Intro](#intro)
+- [Supported Variants](#supported-variants)
+- [Library Code](#library-code)
+- [Dockerised Server Binary](#dockerised-server-binary)
+- [Testing](#testing)
+- [Future Ideas](#future-ideas)
 
-# Poker Hand Evaluator
-# Not yet completed
+### Intro
+This repo contains library code for evaluating poker hands. It also contains a dockerised image of a binary for a HTTP server that sits infront of the evaluation engine (this is what I ultimately needed).
 
-This repo contains a package and accompanying Dockerfile web server for evaluating poker hands.
-
-## Testing
-### Evaluation library tests
-```sh
-chmod +x ./run_lib_tests.sh
-./run_lib_tests.sh
+### Supported Variants
+```rust
+pub enum Variant {
+    FiveCardDraw,
+}
 ```
+
+### Library Code
+The core evaluation logic is inspired by this [article](https://javascript.plainenglish.io/building-a-poker-hand-evaluator-without-conditional-branches-556c39c8e33e). Its idea to apply a bitmask encoding to the card ranks vastly simplifies the logic.
+```rust
+// Single exposed function
+pub fn evaluate_hand(hand: Hand) -> Result<Evaluation, Error>
+```
+
+```rust
+// Input
+pub struct Hand {
+    pub id: String,
+    pub variant: Variant,
+    pub players: Vec<Player>,
+    pub board: Option<Vec<Card>>,
+    pub burn_cards: Option<Vec<Card>>,
+    pub discarded_cards: Option<Vec<Card>>,
+    pub remaining_deck: Vec<Card>,
+}
+```
+
+```rust
+// Output
+pub struct Evaluation {
+    pub id: String,
+    pub players: Vec<PlayerEval>,
+    pub winners: Vec<String>,
+    pub winning_hand: String,
+}
+pub struct PlayerEval {
+    pub id: String,
+    pub hand: String,
+}
+```
+
+```rust
+// Error
+pub struct Error {
+    pub id: String,
+    pub error_type: ErrorType,
+    pub message: String,
+}
+pub enum ErrorType {
+    Validation,
+}
+```
+
+### Dockerised Server Binary
+
+### Testing
+#### Library Code tests
+```sh
+make test
+```
+
+### Future Ideas
+- new variant - texas holdem
+- new variant - 4 card pot limit omaha hi
+- new variant - 5 card pot limit omaha hi
+- new variant - 6 card pot limit omaha hi
+
+# STUFF BELOW IS ALL OLD README BITS
 
 ### Server API tests
 ```sh
