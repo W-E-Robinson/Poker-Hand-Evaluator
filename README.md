@@ -65,6 +65,10 @@ pub enum ErrorType {
 ```
 
 ### Dockerised Server Binary
+#### Running server binary
+```sh
+cargo run --bin server
+```
 
 ### Testing
 #### Library + Server tests
