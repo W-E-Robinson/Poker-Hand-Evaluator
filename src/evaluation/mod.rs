@@ -172,14 +172,14 @@ fn evaluate_five_cards_hi(cards: &Vec<Card>) -> SingleHandEval {
 
     let hand_rank_multiplier = hand_ranks.obtain_hand_multiplier();
 
-    let mut post_adjusment_rank_value =
+    let mut post_adjustment_rank_value =
         pre_adjustment_rank_value + hand_rank_multiplier * RANK_BASE_VALUE;
     if pre_adjustment_rank_value == WHEEL_STRAIGHT_INDICATOR {
-        post_adjusment_rank_value -= ACE_VALUE - 1;
+        post_adjustment_rank_value -= ACE_VALUE - 1;
     };
     if hand_rank_multiplier == HandRankMultipliers::FullHouse as usize {
         let full_house_pair_index = values.iter().position(|&value| value == 2).unwrap();
-        post_adjusment_rank_value -= 2usize.pow(full_house_pair_index as u32 + 1)
+        post_adjustment_rank_value -= 2usize.pow(full_house_pair_index as u32 + 1)
             * ACE_VALUE
             * 2
             * (full_house_pair_index + 1);
@@ -187,7 +187,7 @@ fn evaluate_five_cards_hi(cards: &Vec<Card>) -> SingleHandEval {
 
     SingleHandEval {
         hand_description: hand_ranks.generate_hand_description(pre_adjustment_rank_value),
-        rank_value: post_adjusment_rank_value,
+        rank_value: post_adjustment_rank_value,
     }
 }
 
