@@ -9,7 +9,7 @@
 - [Future Ideas](#future-ideas)
 
 ### Intro
-This repo contains library code for evaluating poker hands. It also contains a dockerised image of a binary for a HTTP server that sits infront of the evaluation engine (this is what I ultimately needed).
+This repo contains library code for evaluating poker hands. It also contains a dockerised image of a binary for a HTTP server that sits infront of the evaluation engine (this is ultimately what I needed).
 
 ### Supported Variants
 ```rust
@@ -67,12 +67,21 @@ pub enum ErrorType {
 ### Dockerised Server Binary
 
 ### Testing
-#### Library Code tests
+#### Library + Server tests
 ```sh
 make test
 ```
+#### Only Library tests
+```sh
+make test-lib
+```
+#### Only Server tests
+```sh
+make test-server
+```
 
-### Future Ideas
+### Future Ideas / Improvements
+- improved hand displays (e.g. Straight -> Six High Straight)
 - new variant - texas holdem
 - new variant - 4 card pot limit omaha hi
 - new variant - 5 card pot limit omaha hi
@@ -85,10 +94,6 @@ make test
 chmod +x ./run_server_tests.sh
 ./run_server_tests.sh
 ```
-
-## Poker Variants
-- Five card draw
-
 ## Usage
 ### Use locally installed Rust:
 1. Compile and run:
