@@ -5,8 +5,8 @@ use crate::{
 };
 
 mod constants;
-mod evaluation;
-mod types;
+pub mod evaluation;
+pub mod types;
 mod validation;
 
 pub fn evaluate_hand(hand: Hand) -> Result<Evaluation, Error> {

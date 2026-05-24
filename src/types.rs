@@ -1,8 +1,10 @@
 use std::fmt;
 
+use serde::Serialize;
+
 use crate::constants::NUMBER_RANKS;
 
-#[derive(Eq, Hash, PartialEq, Clone)]
+#[derive(Eq, Hash, PartialEq, Clone, Debug)]
 pub enum Rank {
     Two,
     Three,
@@ -40,7 +42,7 @@ impl fmt::Display for Rank {
     }
 }
 
-#[derive(Eq, Hash, PartialEq, Clone)]
+#[derive(Eq, Hash, PartialEq, Clone, Debug)]
 pub enum Suit {
     Heart,
     Diamond,
@@ -60,7 +62,7 @@ impl fmt::Display for Suit {
     }
 }
 
-#[derive(Eq, Hash, PartialEq, Clone)]
+#[derive(Eq, Hash, PartialEq, Clone, Debug)]
 pub struct Card {
     pub rank: Rank,
     pub suit: Suit,
@@ -99,11 +101,13 @@ impl Card {
     }
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Player {
     pub id: String,
     pub cards: Vec<Card>,
 }
 
+#[derive(Debug, PartialEq)]
 pub enum Variant {
     FiveCardDraw,
 }
@@ -129,6 +133,7 @@ impl Variant {
     }
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Hand {
     pub id: String,
     pub variant: Variant,
@@ -139,13 +144,13 @@ pub struct Hand {
     pub remaining_deck: Vec<Card>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct PlayerEval {
     pub id: String,
     pub hand: String,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Evaluation {
     pub id: String,
     pub players: Vec<PlayerEval>,
