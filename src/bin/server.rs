@@ -24,9 +24,7 @@ async fn main() {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080")
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
     tracing::debug!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app()).await.unwrap();
 }

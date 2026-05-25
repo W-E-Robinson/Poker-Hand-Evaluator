@@ -165,12 +165,12 @@ make test-server
 ```
 
 ### Future
-- new variants (the first new added variant likely also triggers an organisational refactor of validation logic and the server):
+- new variants (the first new added variant likely also triggers an organisational refactor of evaluation logic and the server binary):
     - texas holdem
     - 4 card omaha hi
     - 5 card omaha hi
     - 6 card omaha hi
-- improved hand displays (e.g. Straight -> Six High Straight)
+- more precise hand displays (e.g. Straight -> Six High Straight)
 - improved logging in server
-- there are a few *touch wood* unreachable unhandled unwraps, probably worth addressing anyway
+- there are a few *touch wood* unreachable unhandled unwraps, probably worth improving potential panicing anyway
 - environment variable the port number
