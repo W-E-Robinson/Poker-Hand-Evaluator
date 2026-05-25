@@ -64,14 +64,25 @@ pub enum ErrorType {
 }
 ```
 
-### Dockerised Server Binary
+### Accompanying Server
 #### Running server binary
 ```sh
 cargo run --bin server
 ```
 
+#### Docker
+```sh
+docker build --pull --no-cache -t poker_hand_evaluator .
+```
+```sh
+docker run --rm -p 8080:8080 --name poker_hand_evaluator poker_hand_evaluator
+```
+```sh
+docker stop poker_hand_evaluator
+```
+
 #### Get all supported poker variants
-```http
+```
 curl localhost:8080/variants
 ```
 ```json
@@ -89,7 +100,7 @@ curl localhost:8080/variants
 ```
 
 #### Evaluate hand
-```http
+```
 curl \
   --header "Content-Type: application/json" \
   --request POST \
@@ -159,33 +170,3 @@ make test-server
 - new variant - 4 card pot limit omaha hi
 - new variant - 5 card pot limit omaha hi
 - new variant - 6 card pot limit omaha hi
-
-# STUFF BELOW IS ALL OLD README BITS = REMOVE
-
-### Server API tests
-```sh
-chmod +x ./run_server_tests.sh
-./run_server_tests.sh
-```
-## Usage
-### Use locally installed Rust:
-1. Compile and run:
-```sh
-cargo run
-```
-
-### Use Docker:
-1. Build image:
-```sh
-docker build --pull --no-cache -t poker_hand_evaluator .
-```
-2. Run container:
-```sh
-docker run --rm -p 8080:8080 --name poker_hand_evaluator poker_hand_evaluator
-```
-3. Stop container:
-```sh
-docker stop poker_hand_evaluator
-```
-
-
