@@ -70,6 +70,75 @@ pub enum ErrorType {
 cargo run --bin server
 ```
 
+#### Get all supported poker variants
+```http
+curl localhost:8080/variants
+```
+```json
+[
+    {
+        "http_request": "POST /evaluate?variant=five-card-draw",
+        "display": {
+            "default": "Five-card draw",
+            "alternates": [
+                "Cantredraw"
+            ]
+        }
+    }
+]
+```
+
+#### Evaluate hand
+```http
+curl \
+  --header "Content-Type: application/json" \
+  --request POST \
+  --data '{
+    "id":"hand-id",
+    "variant":"five-card-draw",
+    "players":[
+      {
+        "id":"player-1-id",
+        "cards":["Ac","Kc","Qc","Jc","Tc"]
+      },
+      {
+        "id":"player-2-id",
+        "cards":["Ad","Kd","Qd","Jd","Td"]
+      }
+    ],
+    "discarded_cards":[],
+    "remaining_deck":[
+      "9c","8c","7c","6c","5c","4c","3c","2c",
+      "9d","8d","7d","6d","5d","4d","3d","2d",
+      "As","Ks","Qs","Js","Ts","9s","8s","7s",
+      "6s","5s","4s","3s","2s",
+      "Ah","Kh","Qh","Jh","Th","9h","8h","7h",
+      "6h","5h","4h","3h","2h"
+    ]
+  }' \
+  "http://localhost:8080/evaluate?variant=five-card-draw"
+```
+```json
+{
+    "id": "hand-id",
+    "players": [
+        {
+            "id": "player-1-id",
+            "hand": "Royal Flush"
+        },
+        {
+            "id": "player-2-id",
+            "hand": "Royal Flush"
+        }
+    ],
+    "winners": [
+        "player-1-id",
+        "player-2-id"
+    ],
+    "winning_hand": "Royal Flush"
+}
+```
+
 ### Testing
 #### Library + Server tests
 ```sh
@@ -91,7 +160,7 @@ make test-server
 - new variant - 5 card pot limit omaha hi
 - new variant - 6 card pot limit omaha hi
 
-# STUFF BELOW IS ALL OLD README BITS
+# STUFF BELOW IS ALL OLD README BITS = REMOVE
 
 ### Server API tests
 ```sh
@@ -119,67 +188,4 @@ docker run --rm -p 8080:8080 --name poker_hand_evaluator poker_hand_evaluator
 docker stop poker_hand_evaluator
 ```
 
-## API
 
-### Get all supported poker variants
-```http
-  GET /variants
-```
-
-#### Example response:
-```json
-{
-    "message": "List of supported poker variants to evaluate.",
-    "variants": [
-        {
-            "pathParameter": "five-card-draw",
-            "display": {
-                "default": "Five-card draw",
-                "alternates": ["Cantredraw"]
-            }
-        }
-    ]
-}
-```
-
-### Evaluate hands
-
-```http
-  POST /evaluate/five-card-draw
-```
-
-#### Example request body:
-```json
-{
-    "players": [
-        {
-            "display": "player 1",
-            "cards": ["Ah", "Kh", "Th", "Jh", "Qh"]
-        },
-        {
-            "display": "player 2",
-            "cards": ["2d", "3d", "4d", "5d", "6d"]
-        },
-    ]
-}
-```
-
-#### Example response:
-```json
-{
-    "players": [
-        {
-            "display": "player 1",
-            "cards": ["Ah", "Kh", "Th", "Jh", "Qh"],
-            "hand": "Ace high straight flush",
-            "winner": true
-        },
-        {
-            "display": "player 2",
-            "cards": ["2d", "3d", "4d", "5d", "6d"],
-            "hand": "Six high straight flush",
-            "winner": false
-        },
-    ]
-}
-```
