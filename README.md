@@ -4,9 +4,9 @@
 - [Intro](#intro)
 - [Supported Variants](#supported-variants)
 - [Library Code](#library-code)
-- [Dockerised Server Binary](#dockerised-server-binary)
+- [Accompanying Server](#accompanying-server)
 - [Testing](#testing)
-- [Future Ideas](#future-ideas)
+- [Future](#future)
 
 ### Intro
 This repo contains library code for evaluating poker hands. It also contains a dockerised image of a binary for a HTTP server that sits infront of the evaluation engine (this is ultimately what I needed).
@@ -164,9 +164,13 @@ make test-lib
 make test-server
 ```
 
-### Future Ideas / Improvements
+### Future
+- new variants (the first new added variant likely also triggers an organisational refactor of validation logic and the server):
+    - texas holdem
+    - 4 card omaha hi
+    - 5 card omaha hi
+    - 6 card omaha hi
 - improved hand displays (e.g. Straight -> Six High Straight)
-- new variant - texas holdem
-- new variant - 4 card pot limit omaha hi
-- new variant - 5 card pot limit omaha hi
-- new variant - 6 card pot limit omaha hi
+- improved logging in server
+- there are a few *touch wood* unreachable unhandled unwraps, probably worth addressing anyway
+- environment variable the port number
