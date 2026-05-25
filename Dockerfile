@@ -1,4 +1,4 @@
-FROM rust:1.80-alpine
+FROM rust:1.95-alpine
 
 WORKDIR /usr/src/poker_hand_evaluator
 
