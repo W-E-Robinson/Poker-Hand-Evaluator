@@ -5,7 +5,7 @@
 - [Supported Variants](#supported-variants)
 - [Library Code](#library-code)
 - [Accompanying Server](#accompanying-server)
-- [Testing](#testing)
+- [Makefile](#makefile)
 - [Future](#future)
 
 ### Intro
@@ -150,7 +150,11 @@ curl \
 }
 ```
 
-### Testing
+### Makefile
+#### All makefile commands
+```sh
+make all
+```
 #### Library + Server tests
 ```sh
 make test
@@ -163,6 +167,14 @@ make test-lib
 ```sh
 make test-server
 ```
+#### Vulnerability checks
+```sh
+make audit
+```
+#### Potential outdated packages
+```sh
+make outdated
+```
 
 ### Future
 - new variants (the first new added variant likely also triggers an organisational refactor of evaluation logic and the server binary):
@@ -172,5 +184,6 @@ make test-server
     - 6 card omaha hi
 - more precise hand displays (e.g. Straight -> Six High Straight)
 - improved logging in server
-- there are a few *touch wood* unreachable unhandled unwraps, probably worth improving potential panicing anyway
+- there are a few *touch wood* unreachable unhandled unwraps, but probably worth protecting against in case
 - environment variable the port number
+- cargo audit pipeline (PR action and scheduled cron action)
