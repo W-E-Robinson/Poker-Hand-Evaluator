@@ -1,3 +1,6 @@
+all:
+	make test && make audit && make outdate
+
 test:
 	cargo nextest run --no-fail-fast
 
@@ -6,3 +9,9 @@ test-lib:
 
 test-server:
 	cargo nextest run --bin server --no-fail-fast
+
+audit:
+	cargo audit
+
+outdate:
+	cargo outdated

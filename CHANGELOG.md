@@ -5,7 +5,7 @@
 - Library level validation pre evaluation (easily extendable for more poker variants).
 - Secondary binary HTTP server that exposes evaluation logic.
 - Dockerfile for HTTP binary.
-- Pipelines for tests and vulnerability scanning on PRs.
+- Testing pipeline on PRs.
 
 ### Changed
 
