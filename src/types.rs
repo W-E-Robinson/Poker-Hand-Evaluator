@@ -107,14 +107,17 @@ pub struct Player {
     pub cards: Vec<Card>,
 }
 
+// LIME: all below and validation needed to
 #[derive(Debug, PartialEq)]
 pub enum Variant {
     FiveCardDraw,
+    TexasHoldem,
 }
 impl fmt::Display for Variant {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let display_string = match self {
             Variant::FiveCardDraw => "Five-card draw",
+            Variant::TexasHoldem => "Texas Hold'em",
         };
 
         write!(f, "{}", display_string)
@@ -124,11 +127,13 @@ impl Variant {
     pub fn cards_per_player(&self) -> usize {
         match self {
             Variant::FiveCardDraw => 5,
+            Variant::TexasHoldem => 2,
         }
     }
     pub fn num_board_cards(&self) -> Option<usize> {
         match self {
             Variant::FiveCardDraw => None,
+            Variant::TexasHoldem => Some(5),
         }
     }
 }
@@ -1117,14 +1122,32 @@ mod tests {
     }
 
     #[test]
+    fn test_variant_impl_to_string_texas_holdem() {
+        let variant = Variant::TexasHoldem;
+        assert_eq!(variant.to_string(), "Texas Hold'em");
+    }
+
+    #[test]
     fn test_variant_impl_cards_per_player_five_card_draw() {
         let variant = Variant::FiveCardDraw;
         assert_eq!(variant.cards_per_player(), 5);
     }
 
     #[test]
+    fn test_variant_impl_cards_per_player_texas_holdem() {
+        let variant = Variant::TexasHoldem;
+        assert_eq!(variant.cards_per_player(), 2);
+    }
+
+    #[test]
     fn test_variant_impl_num_board_cards_five_card_draw() {
         let variant = Variant::FiveCardDraw;
         assert_eq!(variant.num_board_cards(), None);
+    }
+
+    #[test]
+    fn test_variant_impl_num_board_cards_texas_holdem() {
+        let variant = Variant::FiveCardDraw;
+        assert_eq!(variant.num_board_cards(), Some(5));
     }
 }
