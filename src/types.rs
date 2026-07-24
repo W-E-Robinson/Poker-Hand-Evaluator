@@ -107,7 +107,6 @@ pub struct Player {
     pub cards: Vec<Card>,
 }
 
-// LIME: all below and validation needed to
 #[derive(Debug, PartialEq)]
 pub enum Variant {
     FiveCardDraw,
@@ -117,7 +116,7 @@ impl fmt::Display for Variant {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let display_string = match self {
             Variant::FiveCardDraw => "Five-card draw",
-            Variant::TexasHoldem => "Texas Hold'em",
+            Variant::TexasHoldem => "Texas Hold 'em",
         };
 
         write!(f, "{}", display_string)
@@ -1130,7 +1129,7 @@ mod tests {
     #[test]
     fn test_variant_impl_to_string_texas_holdem() {
         let variant = Variant::TexasHoldem;
-        assert_eq!(variant.to_string(), "Texas Hold'em");
+        assert_eq!(variant.to_string(), "Texas Hold 'em");
     }
 
     #[test]

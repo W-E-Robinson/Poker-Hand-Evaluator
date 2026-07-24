@@ -47,13 +47,26 @@ struct VariantInfo {
     display: VariantDisplayInfo,
 }
 async fn get_variants() -> Json<Vec<VariantInfo>> {
-    let variants_response = vec![VariantInfo {
-        http_request: String::from("POST /evaluate?variant=five-card-draw"),
-        display: VariantDisplayInfo {
-            default: String::from("Five-card draw"),
-            alternates: vec![String::from("Cantredraw")],
+    let variants_response = vec![
+        VariantInfo {
+            http_request: String::from("POST /evaluate?variant=five-card-draw"),
+            display: VariantDisplayInfo {
+                default: String::from("Five-card draw"),
+                alternates: vec![String::from("Cantredraw")],
+            },
         },
-    }];
+        VariantInfo {
+            http_request: String::from("POST /evaluate?variant=texas-hold-em"),
+            display: VariantDisplayInfo {
+                default: String::from("Texas Hold 'em"),
+                alternates: vec![
+                    String::from("Texas holdem"),
+                    String::from("hold 'em"),
+                    String::from("holdem"),
+                ],
+            },
+        },
+    ];
 
     Json(variants_response)
 }
@@ -1016,13 +1029,26 @@ mod tests {
         let body = response.into_body().collect().await.unwrap().to_bytes();
         let body: Value = serde_json::from_slice(&body).unwrap();
 
-        let expected_response = vec![VariantInfo {
-            http_request: String::from("POST /evaluate?variant=five-card-draw"),
-            display: VariantDisplayInfo {
-                default: String::from("Five-card draw"),
-                alternates: vec![String::from("Cantredraw")],
+        let expected_response = vec![
+            VariantInfo {
+                http_request: String::from("POST /evaluate?variant=five-card-draw"),
+                display: VariantDisplayInfo {
+                    default: String::from("Five-card draw"),
+                    alternates: vec![String::from("Cantredraw")],
+                },
             },
-        }];
+            VariantInfo {
+                http_request: String::from("POST /evaluate?variant=texas-hold-em"),
+                display: VariantDisplayInfo {
+                    default: String::from("Texas Hold 'em"),
+                    alternates: vec![
+                        String::from("Texas holdem"),
+                        String::from("hold 'em"),
+                        String::from("holdem"),
+                    ],
+                },
+            },
+        ];
         assert_eq!(body, serde_json::to_value(&expected_response).unwrap());
     }
 

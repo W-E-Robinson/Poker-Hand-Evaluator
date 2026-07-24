@@ -15,6 +15,7 @@ This repo contains library code for evaluating poker hands. It also contains a d
 ```rust
 pub enum Variant {
     FiveCardDraw,
+    TexasHoldem,
 }
 ```
 
@@ -93,6 +94,17 @@ curl localhost:8080/variants
             "default": "Five-card draw",
             "alternates": [
                 "Cantredraw"
+            ]
+        }
+    },
+    {
+        "http_request": "POST /evaluate?variant=texas-hold-em",
+        "display": {
+            "default": "Texas Hold 'em",
+            "alternates": [
+                "Texas holdem",
+                "hold 'em",
+                "holdem"
             ]
         }
     }
@@ -174,7 +186,6 @@ make outdated
 
 ### Future
 - new variants (the first new added variant likely also triggers an organisational refactor of evaluation logic and the server binary):
-    - texas holdem
     - 4 card omaha hi
     - 5 card omaha hi
     - 6 card omaha hi
