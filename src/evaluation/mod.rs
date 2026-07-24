@@ -136,6 +136,7 @@ impl HandRanks {
     }
 }
 
+#[cfg(test)]
 mod tests {
     use crate::types::{Card, Player, Rank, Suit};
 

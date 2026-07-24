@@ -20,6 +20,7 @@ pub fn evaluate_seven_cards_hi(cards: &Vec<Card>) -> SingleHandEval {
         .unwrap()
 }
 
+#[cfg(test)]
 mod tests {
     use crate::types::{Rank, Suit};
 
@@ -594,7 +595,7 @@ mod tests {
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Full House"),
-                rank_value: 7_005_505_024
+                rank_value: 7_006_291_460
             }
         );
     }
@@ -635,7 +636,7 @@ mod tests {
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Full House"),
-                rank_value: 7_005_505_024
+                rank_value: 7_006_291_460
             }
         );
     }
@@ -676,7 +677,7 @@ mod tests {
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Full House"),
-                rank_value: 7_006_291_456
+                rank_value: 7_006_291_468
             }
         );
     }
@@ -1332,7 +1333,7 @@ mod tests {
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Full House"),
-                rank_value: 7_024_903_680
+                rank_value: 7_025_165_827
             }
         );
     }

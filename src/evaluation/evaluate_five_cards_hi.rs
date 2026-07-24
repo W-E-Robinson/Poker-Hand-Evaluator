@@ -60,10 +60,8 @@ pub fn evaluate_five_cards_hi(cards: &Vec<Card>) -> SingleHandEval {
     };
     if hand_rank_multiplier == HandRankMultipliers::FullHouse as usize {
         let full_house_pair_index = values.iter().position(|&value| value == 2).unwrap();
-        post_adjustment_rank_value -= 2usize.pow(full_house_pair_index as u32 + 1)
-            * ACE_VALUE
-            * 2
-            * (full_house_pair_index + 1);
+        post_adjustment_rank_value -= 2usize.pow(full_house_pair_index as u32 + 1) * ACE_VALUE * 2;
+        post_adjustment_rank_value += full_house_pair_index + 1;
     };
 
     SingleHandEval {
@@ -72,8 +70,9 @@ pub fn evaluate_five_cards_hi(cards: &Vec<Card>) -> SingleHandEval {
     }
 }
 
+#[cfg(test)]
 mod tests {
-    use crate::types::{Player, Rank, Suit};
+    use crate::types::{Rank, Suit};
 
     use super::*;
 
@@ -237,7 +236,7 @@ mod tests {
             evaluate_five_cards_hi(&cards),
             SingleHandEval {
                 hand_description: String::from("Full House"),
-                rank_value: 7_000_524_288
+                rank_value: 7_000_786_435
             }
         );
     }
