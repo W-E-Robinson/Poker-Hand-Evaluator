@@ -60,7 +60,7 @@ mod tests {
     }
 
     #[test]
-    fn test_evaluation() {
+    fn test_evaluation_five_card_draw() {
         let hand = Hand {
             id: String::from("hand-id"),
             variant: Variant::FiveCardDraw,
@@ -302,6 +302,251 @@ mod tests {
                     PlayerEval {
                         id: String::from("player-2-id"),
                         hand: String::from("Broadway"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Royal Flush"),
+            })
+        );
+    }
+
+    #[test]
+    fn test_evaluation_texas_hold_em() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: Some(vec![
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Heart,
+                },
+            ]),
+            discarded_cards: None,
+            remaining_deck: vec![
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Club,
+                },
+            ],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ten,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate_hand(hand),
+            Ok(Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Royal Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Pair"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
