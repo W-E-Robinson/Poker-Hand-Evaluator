@@ -136,6 +136,12 @@ impl Variant {
             Variant::TexasHoldem => Some(5),
         }
     }
+    pub fn num_burn_cards(&self) -> Option<usize> {
+        match self {
+            Variant::FiveCardDraw => None,
+            Variant::TexasHoldem => Some(3),
+        }
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -1147,7 +1153,19 @@ mod tests {
 
     #[test]
     fn test_variant_impl_num_board_cards_texas_holdem() {
-        let variant = Variant::FiveCardDraw;
+        let variant = Variant::TexasHoldem;
         assert_eq!(variant.num_board_cards(), Some(5));
+    }
+
+    #[test]
+    fn test_variant_impl_num_burn_cards_five_card_draw() {
+        let variant = Variant::FiveCardDraw;
+        assert_eq!(variant.num_burn_cards(), None);
+    }
+
+    #[test]
+    fn test_variant_impl_num_burn_cards_texas_holdem() {
+        let variant = Variant::TexasHoldem;
+        assert_eq!(variant.num_burn_cards(), Some(3));
     }
 }

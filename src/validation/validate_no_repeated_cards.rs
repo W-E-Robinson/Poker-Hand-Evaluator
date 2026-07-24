@@ -204,4 +204,151 @@ mod tests {
         let result = validate_no_repeated_cards(&hand);
         assert!(result.is_ok(),);
     }
+
+    #[test]
+    fn test_error_repeated_cards_texas_holdem() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: Some(vec![]),
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Two,
+                suit: Suit::Spade,
+            }],
+        };
+
+        let result = validate_no_repeated_cards(&hand).unwrap_err();
+        assert_eq!(result, "Repeated cards: Ace of Hearts");
+    }
+
+    #[test]
+    fn test_valid_no_repeated_cards_texas_holdem() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+            board: Some(vec![
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: Some(vec![
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+            ]),
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Five,
+                suit: Suit::Spade,
+            }],
+        };
+
+        let result = validate_no_repeated_cards(&hand);
+        assert!(result.is_ok(),);
+    }
 }

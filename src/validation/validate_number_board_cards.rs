@@ -1,11 +1,22 @@
-use crate::types::{Hand, Variant};
+use crate::types::Hand;
 
 pub fn validate_number_board_cards(hand: &Hand) -> Result<(), String> {
-    match hand.variant {
-        Variant::FiveCardDraw => {
+    match hand.variant.num_board_cards() {
+        None => {
             if hand.board.is_some() {
                 return Err(format!(
                     "There should be no board for {}.",
+                    hand.variant.to_string(),
+                ));
+            }
+        }
+        Some(expected_num_board_cards) => {
+            let actual_num_board_cards = hand.board.as_ref().map_or(0, |board| board.len());
+
+            if actual_num_board_cards != expected_num_board_cards {
+                return Err(format!(
+                    "There should be exactly {} board cards for {}.",
+                    expected_num_board_cards,
                     hand.variant.to_string(),
                 ));
             }
@@ -17,7 +28,7 @@ pub fn validate_number_board_cards(hand: &Hand) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-    use crate::types::{Card, Player, Rank, Suit};
+    use crate::types::{Card, Player, Rank, Suit, Variant};
 
     use super::*;
 
@@ -106,6 +117,143 @@ mod tests {
             remaining_deck: vec![Card {
                 rank: Rank::Ace,
                 suit: Suit::Heart,
+            }],
+        };
+
+        let result = validate_number_board_cards(&hand);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_no_board_given_texas_holdem() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            players: vec![Player {
+                id: String::from("player-1-id"),
+                cards: vec![
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                ],
+            }],
+            board: None,
+            burn_cards: Some(vec![]),
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Diamond,
+            }],
+        };
+
+        let result = validate_number_board_cards(&hand).unwrap_err();
+        assert_eq!(
+            result,
+            "There should be exactly 5 board cards for Texas Hold'em.",
+        );
+    }
+
+    #[test]
+    fn test_incorrect_number_board_cards_texas_holdem() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            players: vec![Player {
+                id: String::from("player-1-id"),
+                cards: vec![
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                ],
+            }],
+            board: Some(vec![
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: Some(vec![]),
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Diamond,
+            }],
+        };
+
+        let result = validate_number_board_cards(&hand).unwrap_err();
+        assert_eq!(
+            result,
+            "There should be exactly 5 board cards for Texas Hold'em.",
+        );
+    }
+
+    #[test]
+    fn test_correct_number_board_cards_texas_holdem() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            players: vec![Player {
+                id: String::from("player-1-id"),
+                cards: vec![
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                ],
+            }],
+            board: Some(vec![
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: Some(vec![]),
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Diamond,
             }],
         };
 
