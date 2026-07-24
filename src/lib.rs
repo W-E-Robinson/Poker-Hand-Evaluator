@@ -362,6 +362,14 @@ mod tests {
                     suit: Suit::Diamond,
                 },
                 Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Diamond,
+                },
+                Card {
                     rank: Rank::Five,
                     suit: Suit::Diamond,
                 },

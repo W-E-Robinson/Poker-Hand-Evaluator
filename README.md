@@ -185,7 +185,7 @@ make outdated
 ```
 
 ### Future
-- new variants (the first new added variant likely also triggers an organisational refactor of evaluation logic and the server binary):
+- further variants:
     - 4 card omaha hi
     - 5 card omaha hi
     - 6 card omaha hi
