@@ -1,6 +1,3 @@
-all:
-	make test && make audit && make outdate
-
 test:
 	cargo nextest run --no-fail-fast
 

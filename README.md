@@ -151,10 +151,6 @@ curl \
 ```
 
 ### Makefile
-#### All makefile commands
-```sh
-make all
-```
 #### Library + Server tests
 ```sh
 make test
