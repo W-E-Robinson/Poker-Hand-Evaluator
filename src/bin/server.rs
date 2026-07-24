@@ -1172,7 +1172,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_evaluation_success() {
+    async fn test_evaluation_success_five_card_draw() {
         let app = app();
 
         let body = EvaluateRequest {
@@ -1272,6 +1272,108 @@ mod tests {
                 { "id": "player-2-id", "hand": "Royal Flush" }
             ],
             "winners": ["player-1-id", "player-2-id"],
+            "winning_hand": "Royal Flush"
+        });
+
+        assert_eq!(actual, expected);
+    }
+
+    #[tokio::test]
+    async fn test_evaluation_success_texas_hold_em() {
+        let app = app();
+
+        let body = EvaluateRequest {
+            id: String::from("hand-id"),
+            variant: String::from("texas-hold-em"),
+            players: vec![
+                EvaluateRequestPlayer {
+                    id: String::from("player-1-id"),
+                    cards: vec![String::from("Ac"), String::from("Kc")],
+                },
+                EvaluateRequestPlayer {
+                    id: String::from("player-2-id"),
+                    cards: vec![String::from("Jd"), String::from("Td")],
+                },
+            ],
+            board: Some(vec![
+                String::from("Qc"),
+                String::from("Jc"),
+                String::from("Tc"),
+                String::from("Qd"),
+                String::from("7c"),
+            ]),
+            remaining_deck: vec![
+                String::from("Ad"),
+                String::from("Kd"),
+                String::from("9c"),
+                String::from("8c"),
+                String::from("6c"),
+                String::from("5c"),
+                String::from("4c"),
+                String::from("3c"),
+                String::from("2c"),
+                String::from("9d"),
+                String::from("8d"),
+                String::from("7d"),
+                String::from("6d"),
+                String::from("5d"),
+                String::from("4d"),
+                String::from("3d"),
+                String::from("2d"),
+                String::from("As"),
+                String::from("Ks"),
+                String::from("Qs"),
+                String::from("Js"),
+                String::from("Ts"),
+                String::from("9s"),
+                String::from("8s"),
+                String::from("7s"),
+                String::from("6s"),
+                String::from("5s"),
+                String::from("4s"),
+                String::from("3s"),
+                String::from("2s"),
+                String::from("Ah"),
+                String::from("Kh"),
+                String::from("Qh"),
+                String::from("Jh"),
+                String::from("Th"),
+                String::from("9h"),
+                String::from("8h"),
+                String::from("7h"),
+                String::from("6h"),
+                String::from("5h"),
+                String::from("4h"),
+                String::from("3h"),
+                String::from("2h"),
+            ],
+            burn_cards: None,
+            discarded_cards: None,
+        };
+        let json = serde_json::to_string(&body).unwrap();
+
+        let response = app
+            .oneshot(
+                Request::post("/evaluate?variant=texas-hold-em")
+                    .header(CONTENT_TYPE, "application/json")
+                    .body(Body::from(json))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(response.status(), StatusCode::OK);
+
+        let body = response.into_body().collect().await.unwrap().to_bytes();
+        let actual: serde_json::Value = serde_json::from_slice(&body).unwrap();
+
+        let expected = json!({
+            "id": "hand-id",
+            "players": [
+                { "id": "player-1-id", "hand": "Royal Flush" },
+                { "id": "player-2-id", "hand": "Two Pair" }
+            ],
+            "winners": ["player-1-id",],
             "winning_hand": "Royal Flush"
         });
 

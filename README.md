@@ -194,4 +194,4 @@ make outdated
 - there are a few *touch wood* unreachable unhandled unwraps, but probably worth protecting against in case
 - environment variable the port number
 - cargo audit pipeline (PR action and scheduled cron action)
-- query parameter of `variable` in the POST evaluate seems redundant
+- query parameter of `variable` in the POST evaluate seems redundant (update README examples as part of this)
