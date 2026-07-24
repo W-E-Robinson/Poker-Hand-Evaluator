@@ -4,7 +4,6 @@ use crate::{
     types::Card,
 };
 
-// LIME: how much of below can be extracted?
 pub fn evaluate_five_cards_hi(cards: &Vec<Card>) -> SingleHandEval {
     let mut suits = [0; NUMBER_SUITS];
     let mut values = [0; NUMBER_RANKS];

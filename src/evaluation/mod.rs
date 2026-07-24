@@ -14,7 +14,7 @@ struct PlayerEvaluatedHand {
     id: String,
     result: SingleHandEval,
 }
-// LIME: will need more texas holdem evaluates
+
 pub fn evaluate(hand: Hand) -> Evaluation {
     let hand_evals: Vec<PlayerEvaluatedHand> = hand
         .players
@@ -24,10 +24,14 @@ pub fn evaluate(hand: Hand) -> Evaluation {
                 id: player.id.clone(),
                 result: evaluate_five_cards_hi(&player.cards),
             },
-            Variant::TexasHoldem => PlayerEvaluatedHand {
-                id: player.id.clone(),
-                result: evaluate_seven_cards_hi(&player.cards),
-            },
+            Variant::TexasHoldem => {
+                let mut all_cards = player.cards.clone();
+                all_cards.extend(hand.board.clone().unwrap_or_default());
+                PlayerEvaluatedHand {
+                    id: player.id.clone(),
+                    result: evaluate_seven_cards_hi(&all_cards),
+                }
+            }
         })
         .collect();
 
@@ -1784,3 +1788,6 @@ mod tests {
         );
     }
 }
+
+// LIME: I need more tests here on various hands, chopped, 2 way chopped and whatnot, look above for
+// inspiration

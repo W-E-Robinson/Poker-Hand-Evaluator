@@ -134,6 +134,7 @@ impl EvaluateRequest {
             id: self.id,
             variant: match self.variant.as_str() {
                 "five-card-draw" => Variant::FiveCardDraw,
+                "texas-hold-em" => Variant::TexasHoldem,
                 _ => unreachable!(),
             },
             players: players,
@@ -201,6 +202,7 @@ async fn post_evaluate(
 
     let is_supported_variant = match variant.as_str() {
         "five-card-draw" => true,
+        "texas-hold-em" => true,
         _ => false,
     };
     if !is_supported_variant {
@@ -1343,11 +1345,12 @@ mod tests {
                 String::from("7h"),
                 String::from("6h"),
                 String::from("5h"),
+            ],
+            burn_cards: Some(vec![
                 String::from("4h"),
                 String::from("3h"),
                 String::from("2h"),
-            ],
-            burn_cards: None,
+            ]),
             discarded_cards: None,
         };
         let json = serde_json::to_string(&body).unwrap();
