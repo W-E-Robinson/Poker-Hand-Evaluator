@@ -10,6 +10,14 @@ pub fn validate_number_discarded_cards(hand: &Hand) -> Result<(), String> {
                 ));
             }
         }
+        Variant::TexasHoldem => {
+            if hand.discarded_cards.is_some() {
+                return Err(format!(
+                    "There should be no discarded cards for {}.",
+                    hand.variant.to_string(),
+                ));
+            }
+        }
     }
 
     Ok(())
@@ -17,7 +25,7 @@ pub fn validate_number_discarded_cards(hand: &Hand) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-    use crate::types::{Card, Player, Rank, Suit};
+    use crate::types::{Card, Player, Rank, Suit, Variant};
 
     use super::*;
 
@@ -106,6 +114,74 @@ mod tests {
             remaining_deck: vec![Card {
                 rank: Rank::Ace,
                 suit: Suit::Heart,
+            }],
+        };
+
+        let result = validate_number_discarded_cards(&hand);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_discarded_cards_given_texas_holdem() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            players: vec![Player {
+                id: String::from("player-1-id"),
+                cards: vec![
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                ],
+            }],
+            burn_cards: Some(vec![]),
+            board: Some(vec![]),
+            discarded_cards: Some(vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Diamond,
+            }]),
+            remaining_deck: vec![Card {
+                rank: Rank::King,
+                suit: Suit::Diamond,
+            }],
+        };
+
+        let result = validate_number_discarded_cards(&hand).unwrap_err();
+        assert_eq!(
+            result,
+            "There should be no discarded cards for Texas Hold'em.",
+        );
+    }
+
+    #[test]
+    fn test_none_discarded_cards_texas_holdem() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            players: vec![Player {
+                id: String::from("player-1-id"),
+                cards: vec![
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                ],
+            }],
+            burn_cards: Some(vec![]),
+            board: Some(vec![]),
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Diamond,
             }],
         };
 
