@@ -154,7 +154,7 @@ mod tests {
         let result = validate_number_board_cards(&hand).unwrap_err();
         assert_eq!(
             result,
-            "There should be exactly 5 board cards for Texas Hold'em.",
+            "There should be exactly 5 board cards for Texas Hold 'em.",
         );
     }
 
@@ -205,7 +205,7 @@ mod tests {
         let result = validate_number_board_cards(&hand).unwrap_err();
         assert_eq!(
             result,
-            "There should be exactly 5 board cards for Texas Hold'em.",
+            "There should be exactly 5 board cards for Texas Hold 'em.",
         );
     }
 

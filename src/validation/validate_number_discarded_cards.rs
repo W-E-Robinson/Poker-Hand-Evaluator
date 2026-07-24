@@ -154,7 +154,7 @@ mod tests {
         let result = validate_number_discarded_cards(&hand).unwrap_err();
         assert_eq!(
             result,
-            "There should be no discarded cards for Texas Hold'em.",
+            "There should be no discarded cards for Texas Hold 'em.",
         );
     }
 

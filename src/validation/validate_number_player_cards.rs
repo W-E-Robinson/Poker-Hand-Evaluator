@@ -252,7 +252,7 @@ mod tests {
         };
 
         let result = validate_number_player_cards(&hand).unwrap_err();
-        assert_eq!(result, "Each provided player should have 2 cards for Texas Hold'em. Players with the incorrect number of cards: player-2-id, player-3-id.",);
+        assert_eq!(result, "Each provided player should have 2 cards for Texas Hold 'em. Players with the incorrect number of cards: player-2-id, player-3-id.",);
     }
 
     #[test]

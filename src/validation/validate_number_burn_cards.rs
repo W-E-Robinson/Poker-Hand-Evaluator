@@ -154,7 +154,7 @@ mod tests {
         let result = validate_number_burn_cards(&hand).unwrap_err();
         assert_eq!(
             result,
-            "There should be exactly 3 burn cards for Texas Hold'em.",
+            "There should be exactly 3 burn cards for Texas Hold 'em.",
         );
     }
 
@@ -197,7 +197,7 @@ mod tests {
         let result = validate_number_burn_cards(&hand).unwrap_err();
         assert_eq!(
             result,
-            "There should be exactly 3 burn cards for Texas Hold'em.",
+            "There should be exactly 3 burn cards for Texas Hold 'em.",
         );
     }
 
