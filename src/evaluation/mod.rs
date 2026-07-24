@@ -1787,7 +1787,2140 @@ mod tests {
             }
         );
     }
-}
 
-// LIME: I need more tests here on various hands, chopped, 2 way chopped and whatnot, look above for
-// inspiration
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_royal_flush_vs_pair_single_winner() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Heart,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Royal Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Pair"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Royal Flush"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_straight_flush_beats_quads() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Straight Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Four of a Kind"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Straight Flush"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_quads_beats_full_house() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Four of a Kind"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Full House"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Four of a Kind"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_full_house_vs_full_house_no_chop_pair_kicker() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Full House"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Full House"),
+                    }
+                ],
+                winners: vec![String::from("player-2-id")],
+                winning_hand: String::from("Full House"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_flush_on_board_is_chopped() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Flush"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id"), String::from("player-2-id")],
+                winning_hand: String::from("Flush"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_flush_vs_flush_no_chop_kicker() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Flush"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Flush"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_straight_vs_straight_no_chop() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ten,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Straight"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Straight"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Straight"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_trips_vs_trips_no_chop_kicker() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Three of a Kind"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Three of a Kind"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Three of a Kind"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_two_pair_on_board_chopped_via_matching_kicker() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Two Pair"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Two Pair"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id"), String::from("player-2-id")],
+                winning_hand: String::from("Two Pair"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_two_pair_vs_two_pair_no_chop_kicker() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Two Pair"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Two Pair"),
+                    }
+                ],
+                winners: vec![String::from("player-2-id")],
+                winning_hand: String::from("Two Pair"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_pair_beats_high_card_single_winner() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Spade,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Pair"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("High Card"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Pair"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_high_card_vs_high_card_no_chop_kicker() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Heart,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("High Card"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("High Card"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("High Card"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_three_player_royal_flush_on_board_all_chopped() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-3-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Royal Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Royal Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-3-id"),
+                        hand: String::from("Royal Flush"),
+                    }
+                ],
+                winners: vec![
+                    String::from("player-1-id"),
+                    String::from("player-2-id"),
+                    String::from("player-3-id")
+                ],
+                winning_hand: String::from("Royal Flush"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_three_player_two_way_chop_one_loser() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-3-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Straight"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Straight"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-3-id"),
+                        hand: String::from("High Card"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id"), String::from("player-2-id")],
+                winning_hand: String::from("Straight"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_three_player_quads_on_board_chop_hole_cards_irrelevant() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-3-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Four of a Kind"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Four of a Kind"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-3-id"),
+                        hand: String::from("Four of a Kind"),
+                    }
+                ],
+                winners: vec![
+                    String::from("player-1-id"),
+                    String::from("player-2-id"),
+                    String::from("player-3-id")
+                ],
+                winning_hand: String::from("Four of a Kind"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_three_player_straight_flush_on_board_chop_hole_cards_irrelevant()
+    {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Heart,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-3-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Straight Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Straight Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-3-id"),
+                        hand: String::from("Straight Flush"),
+                    }
+                ],
+                winners: vec![
+                    String::from("player-1-id"),
+                    String::from("player-2-id"),
+                    String::from("player-3-id")
+                ],
+                winning_hand: String::from("Straight Flush"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_wheel_flush_on_board_chop_hole_cards_irrelevant() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Ten,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Wheel Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Wheel Flush"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id"), String::from("player-2-id")],
+                winning_hand: String::from("Wheel Flush"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_straight_on_board_chop_despite_incidental_pair() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Straight"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Straight"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id"), String::from("player-2-id")],
+                winning_hand: String::from("Straight"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_wheel_on_board_chop_hole_cards_irrelevant() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Ten,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Wheel"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Wheel"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id"), String::from("player-2-id")],
+                winning_hand: String::from("Wheel"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_six_high_straight_beats_wheel() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Straight"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Wheel"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Straight"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_high_card_board_chop_hole_cards_below_kicker() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Heart,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("High Card"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("High Card"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id"), String::from("player-2-id")],
+                winning_hand: String::from("High Card"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_two_pair_board_chop_ace_kicker_hole_cards_irrelevant()
+    {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Two Pair"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Two Pair"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id"), String::from("player-2-id")],
+                winning_hand: String::from("Two Pair"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_trips_board_chop_unbeatable_kickers() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Three of a Kind"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Three of a Kind"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id"), String::from("player-2-id")],
+                winning_hand: String::from("Three of a Kind"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_pair_board_chop_unbeatable_kickers() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Pair"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Pair"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id"), String::from("player-2-id")],
+                winning_hand: String::from("Pair"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_flush_beats_straight_single_winner() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Heart,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Straight"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Flush"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_texas_holdem_two_player_straight_flush_vs_straight_flush_no_chop_high_card() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::TexasHoldem,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Straight Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Straight Flush"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Straight Flush"),
+            }
+        );
+    }
+}
