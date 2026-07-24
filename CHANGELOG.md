@@ -1,3 +1,14 @@
+## [1.1.0] - 2026-07-25
+
+### Added
+- Texas Hold 'em poker variant evaluation supported.
+
+### Changed
+
+### Fixed
+
+### Removed
+
 ## [1.0.0] - 2026-05-26
 
 ### Added
