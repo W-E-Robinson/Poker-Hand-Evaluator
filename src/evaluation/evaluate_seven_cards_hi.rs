@@ -225,7 +225,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Straight Flush"),
+                hand_description: String::from("Nine High Straight Flush"),
                 rank_value: 9_000_000_496
             }
         );
@@ -266,7 +266,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Straight Flush"),
+                hand_description: String::from("Nine High Straight Flush"),
                 rank_value: 9_000_000_496
             }
         );
@@ -307,7 +307,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Straight Flush"),
+                hand_description: String::from("Nine High Straight Flush"),
                 rank_value: 9_000_000_496
             }
         );
@@ -348,7 +348,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Straight Flush"),
+                hand_description: String::from("Nine High Straight Flush"),
                 rank_value: 9_000_000_496
             }
         );
@@ -471,7 +471,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Four of a Kind"),
+                hand_description: String::from("Four of a Kind Nines"),
                 rank_value: 8_008_392_704
             }
         );
@@ -512,7 +512,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Four of a Kind"),
+                hand_description: String::from("Four of a Kind Nines"),
                 rank_value: 8_008_392_704
             }
         );
@@ -553,7 +553,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Four of a Kind"),
+                hand_description: String::from("Four of a Kind Nines"),
                 rank_value: 8_008_388_624
             }
         );
@@ -594,7 +594,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Full House"),
+                hand_description: String::from("Full House, Nines full of Fives"),
                 rank_value: 7_006_291_460
             }
         );
@@ -635,7 +635,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Full House"),
+                hand_description: String::from("Full House, Nines full of Fives"),
                 rank_value: 7_006_291_460
             }
         );
@@ -676,7 +676,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Full House"),
+                hand_description: String::from("Full House, Nines full of Kings"),
                 rank_value: 7_006_291_468
             }
         );
@@ -717,7 +717,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Two Pair"),
+                hand_description: String::from("Two Pair, Kings and Queens"),
                 rank_value: 3_100_664_320
             }
         );
@@ -758,7 +758,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Flush"),
+                hand_description: String::from("Ace High Flush"),
                 rank_value: 6_000_009_362
             }
         );
@@ -799,7 +799,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Flush"),
+                hand_description: String::from("Ace High Flush"),
                 rank_value: 6_000_009_616
             }
         );
@@ -840,7 +840,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Flush"),
+                hand_description: String::from("Ace High Flush"),
                 rank_value: 6_000_009_362
             }
         );
@@ -881,7 +881,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Flush"),
+                hand_description: String::from("Ace High Flush"),
                 rank_value: 6_000_009_362
             }
         );
@@ -922,7 +922,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Flush"),
+                hand_description: String::from("Nine High Flush"),
                 rank_value: 6_000_000_342
             }
         );
@@ -963,7 +963,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Straight"),
+                hand_description: String::from("Nine High Straight"),
                 rank_value: 5_000_000_496
             }
         );
@@ -1004,7 +1004,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Straight"),
+                hand_description: String::from("Nine High Straight"),
                 rank_value: 5_000_000_496
             }
         );
@@ -1045,7 +1045,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Straight"),
+                hand_description: String::from("Nine High Straight"),
                 rank_value: 5_000_000_496
             }
         );
@@ -1086,7 +1086,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Straight"),
+                hand_description: String::from("Nine High Straight"),
                 rank_value: 5_000_000_496
             }
         );
@@ -1209,7 +1209,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Three of a Kind"),
+                hand_description: String::from("Three of a Kind Nines"),
                 rank_value: 4_006_296_576
             }
         );
@@ -1250,7 +1250,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Three of a Kind"),
+                hand_description: String::from("Three of a Kind Nines"),
                 rank_value: 4_006_295_680
             }
         );
@@ -1291,7 +1291,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Straight"),
+                hand_description: String::from("Nine High Straight"),
                 rank_value: 5_000_000_496
             }
         );
@@ -1332,7 +1332,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Full House"),
+                hand_description: String::from("Full House, Jacks full of Fours"),
                 rank_value: 7_025_165_827
             }
         );
@@ -1373,7 +1373,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Two Pair"),
+                hand_description: String::from("Two Pair, Kings and Queens"),
                 rank_value: 3_100_663_552
             }
         );
@@ -1414,7 +1414,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Two Pair"),
+                hand_description: String::from("Two Pair, Tens and Eights"),
                 rank_value: 3_010_485_792
             }
         );
@@ -1455,7 +1455,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Straight"),
+                hand_description: String::from("Nine High Straight"),
                 rank_value: 5_000_000_496
             }
         );
@@ -1496,7 +1496,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Pair"),
+                hand_description: String::from("Pair of Nines"),
                 rank_value: 2_004_199_488
             }
         );
@@ -1537,7 +1537,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Pair"),
+                hand_description: String::from("Pair of Nines"),
                 rank_value: 2_004_198_592
             }
         );
@@ -1578,7 +1578,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Straight"),
+                hand_description: String::from("Nine High Straight"),
                 rank_value: 5_000_000_496
             }
         );
@@ -1619,7 +1619,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("Flush"),
+                hand_description: String::from("Jack High Flush"),
                 rank_value: 6_000_001_426
             }
         );
@@ -1660,7 +1660,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("High Card"),
+                hand_description: String::from("High Card Ace"),
                 rank_value: 1_000_012_624
             }
         );
@@ -1701,7 +1701,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("High Card"),
+                hand_description: String::from("High Card Ace"),
                 rank_value: 1_000_013_696
             }
         );
@@ -1742,7 +1742,7 @@ mod tests {
         assert_eq!(
             evaluate_seven_cards_hi(&cards),
             SingleHandEval {
-                hand_description: String::from("High Card"),
+                hand_description: String::from("High Card King"),
                 rank_value: 1_000_004_576
             }
         );

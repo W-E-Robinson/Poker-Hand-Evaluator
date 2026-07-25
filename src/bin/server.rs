@@ -1322,7 +1322,7 @@ mod tests {
             "id": "hand-id",
             "players": [
                 { "id": "player-1-id", "hand": "Royal Flush" },
-                { "id": "player-2-id", "hand": "Two Pair" }
+                { "id": "player-2-id", "hand": "Two Pair, Queens and Jacks" }
             ],
             "winners": ["player-1-id",],
             "winning_hand": "Royal Flush"
