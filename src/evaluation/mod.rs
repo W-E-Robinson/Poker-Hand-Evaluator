@@ -326,8 +326,8 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(1),
-            String::from("Straight Flush")
+            hand_rank.generate_hand_description(7_936),
+            String::from("King High Straight Flush")
         );
     }
 
@@ -344,8 +344,8 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(1),
-            String::from("Four of a Kind")
+            hand_rank.generate_hand_description(268_439_552),
+            String::from("Four of a Kind Aces")
         );
     }
 
@@ -362,8 +362,8 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(1),
-            String::from("Full House")
+            hand_rank.generate_hand_description(268_435_456),
+            String::from("Full House, Aces full of Kings")
         );
     }
 
@@ -380,8 +380,8 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(1),
-            String::from("Flush")
+            hand_rank.generate_hand_description(9_320),
+            String::from("Ace High Flush")
         );
     }
 
@@ -434,8 +434,8 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(1),
-            String::from("Straight")
+            hand_rank.generate_hand_description(7_936),
+            String::from("King High Straight")
         );
     }
 
@@ -452,8 +452,8 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(1),
-            String::from("Three of a Kind")
+            hand_rank.generate_hand_description(201_332_736),
+            String::from("Three of a Kind Aces")
         );
     }
 
@@ -470,8 +470,8 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(1),
-            String::from("Two Pair")
+            hand_rank.generate_hand_description(201_328_640),
+            String::from("Two Pair, Aces and Kings")
         );
     }
 
@@ -487,7 +487,10 @@ mod tests {
             two_pair: false,
             pair: true,
         };
-        assert_eq!(hand_rank.generate_hand_description(1), String::from("Pair"));
+        assert_eq!(
+            hand_rank.generate_hand_description(134_224_896),
+            String::from("Pair of Aces")
+        );
     }
 
     #[test]
@@ -503,8 +506,8 @@ mod tests {
             pair: false,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(1),
-            String::from("High Card")
+            hand_rank.generate_hand_description(9_986),
+            String::from("High Card Ace")
         );
     }
 
@@ -750,7 +753,7 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Straight"),
+                        hand: String::from("Six High Straight"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
@@ -758,7 +761,7 @@ mod tests {
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("Straight"),
+                winning_hand: String::from("Six High Straight"),
             }
         );
     }
@@ -835,15 +838,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Full House"),
+                        hand: String::from("Full House, Sixes full of Threes"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Full House"),
+                        hand: String::from("Full House, Fours full of Aces"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("Full House"),
+                winning_hand: String::from("Full House, Sixes full of Threes"),
             }
         );
     }
@@ -920,15 +923,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Two Pair"),
+                        hand: String::from("Two Pair, Sixes and Fours"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Two Pair"),
+                        hand: String::from("Two Pair, Sixes and Fours"),
                     }
                 ],
                 winners: vec![String::from("player-1-id"), String::from("player-2-id")],
-                winning_hand: String::from("Two Pair"),
+                winning_hand: String::from("Two Pair, Sixes and Fours"),
             }
         );
     }
@@ -1005,15 +1008,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Two Pair"),
+                        hand: String::from("Two Pair, Sixes and Fours"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Two Pair"),
+                        hand: String::from("Two Pair, Sixes and Fours"),
                     }
                 ],
                 winners: vec![String::from("player-2-id")],
-                winning_hand: String::from("Two Pair"),
+                winning_hand: String::from("Two Pair, Sixes and Fours"),
             }
         );
     }
@@ -1175,15 +1178,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Flush"),
+                        hand: String::from("Ace High Flush"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Flush"),
+                        hand: String::from("Ace High Flush"),
                     }
                 ],
                 winners: vec![String::from("player-2-id")],
-                winning_hand: String::from("Flush"),
+                winning_hand: String::from("Ace High Flush"),
             }
         );
     }
@@ -1260,15 +1263,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Flush"),
+                        hand: String::from("Ace High Flush"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Flush"),
+                        hand: String::from("Ace High Flush"),
                     }
                 ],
                 winners: vec![String::from("player-1-id"), String::from("player-2-id")],
-                winning_hand: String::from("Flush"),
+                winning_hand: String::from("Ace High Flush"),
             }
         );
     }
@@ -1345,15 +1348,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Flush"),
+                        hand: String::from("Ace High Flush"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Straight"),
+                        hand: String::from("Seven High Straight"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("Flush"),
+                winning_hand: String::from("Ace High Flush"),
             }
         );
     }
@@ -1430,15 +1433,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Ace"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card King"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("High Card"),
+                winning_hand: String::from("High Card Ace"),
             }
         );
     }
@@ -1540,15 +1543,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Ace"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Ace"),
                     },
                     PlayerEval {
                         id: String::from("player-3-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Ace"),
                     }
                 ],
                 winners: vec![
@@ -1556,7 +1559,7 @@ mod tests {
                     String::from("player-2-id"),
                     String::from("player-3-id")
                 ],
-                winning_hand: String::from("High Card"),
+                winning_hand: String::from("High Card Ace"),
             }
         );
     }
@@ -1658,19 +1661,19 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Ace"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Ace"),
                     },
                     PlayerEval {
                         id: String::from("player-3-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card King"),
                     }
                 ],
                 winners: vec![String::from("player-1-id"), String::from("player-2-id")],
-                winning_hand: String::from("High Card"),
+                winning_hand: String::from("High Card Ace"),
             }
         );
     }
@@ -1772,19 +1775,19 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Ace"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Queen"),
                     },
                     PlayerEval {
                         id: String::from("player-3-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card King"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("High Card"),
+                winning_hand: String::from("High Card Ace"),
             }
         );
     }
@@ -1859,7 +1862,7 @@ mod tests {
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Pair"),
+                        hand: String::from("Pair of Nines"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
@@ -1934,15 +1937,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Straight Flush"),
+                        hand: String::from("Nine High Straight Flush"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Four of a Kind"),
+                        hand: String::from("Four of a Kind Sixes"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("Straight Flush"),
+                winning_hand: String::from("Nine High Straight Flush"),
             }
         );
     }
@@ -2013,15 +2016,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Four of a Kind"),
+                        hand: String::from("Four of a Kind Kings"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Full House"),
+                        hand: String::from("Full House, Kings full of Fours"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("Four of a Kind"),
+                winning_hand: String::from("Four of a Kind Kings"),
             }
         );
     }
@@ -2092,15 +2095,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Full House"),
+                        hand: String::from("Full House, Queens full of Fours"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Full House"),
+                        hand: String::from("Full House, Queens full of Nines"),
                     }
                 ],
                 winners: vec![String::from("player-2-id")],
-                winning_hand: String::from("Full House"),
+                winning_hand: String::from("Full House, Queens full of Nines"),
             }
         );
     }
@@ -2171,15 +2174,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Flush"),
+                        hand: String::from("Ace High Flush"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Flush"),
+                        hand: String::from("Ace High Flush"),
                     }
                 ],
                 winners: vec![String::from("player-1-id"), String::from("player-2-id")],
-                winning_hand: String::from("Flush"),
+                winning_hand: String::from("Ace High Flush"),
             }
         );
     }
@@ -2250,15 +2253,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Flush"),
+                        hand: String::from("Ace High Flush"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Flush"),
+                        hand: String::from("Ace High Flush"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("Flush"),
+                winning_hand: String::from("Ace High Flush"),
             }
         );
     }
@@ -2329,15 +2332,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Straight"),
+                        hand: String::from("Ten High Straight"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Straight"),
+                        hand: String::from("Nine High Straight"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("Straight"),
+                winning_hand: String::from("Ten High Straight"),
             }
         );
     }
@@ -2408,15 +2411,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Three of a Kind"),
+                        hand: String::from("Three of a Kind Nines"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Three of a Kind"),
+                        hand: String::from("Three of a Kind Nines"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("Three of a Kind"),
+                winning_hand: String::from("Three of a Kind Nines"),
             }
         );
     }
@@ -2487,15 +2490,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Two Pair"),
+                        hand: String::from("Two Pair, Kings and Fours"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Two Pair"),
+                        hand: String::from("Two Pair, Kings and Fours"),
                     }
                 ],
                 winners: vec![String::from("player-1-id"), String::from("player-2-id")],
-                winning_hand: String::from("Two Pair"),
+                winning_hand: String::from("Two Pair, Kings and Fours"),
             }
         );
     }
@@ -2566,15 +2569,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Two Pair"),
+                        hand: String::from("Two Pair, Kings and Fours"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Two Pair"),
+                        hand: String::from("Two Pair, Kings and Fours"),
                     }
                 ],
                 winners: vec![String::from("player-2-id")],
-                winning_hand: String::from("Two Pair"),
+                winning_hand: String::from("Two Pair, Kings and Fours"),
             }
         );
     }
@@ -2645,15 +2648,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Pair"),
+                        hand: String::from("Pair of Sevens"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Jack"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("Pair"),
+                winning_hand: String::from("Pair of Sevens"),
             }
         );
     }
@@ -2724,15 +2727,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Ace"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Ace"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("High Card"),
+                winning_hand: String::from("High Card Ace"),
             }
         );
     }
@@ -2916,19 +2919,19 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Straight"),
+                        hand: String::from("Nine High Straight"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Straight"),
+                        hand: String::from("Nine High Straight"),
                     },
                     PlayerEval {
                         id: String::from("player-3-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Ace"),
                     }
                 ],
                 winners: vec![String::from("player-1-id"), String::from("player-2-id")],
-                winning_hand: String::from("Straight"),
+                winning_hand: String::from("Nine High Straight"),
             }
         );
     }
@@ -3012,15 +3015,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Four of a Kind"),
+                        hand: String::from("Four of a Kind Eights"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Four of a Kind"),
+                        hand: String::from("Four of a Kind Eights"),
                     },
                     PlayerEval {
                         id: String::from("player-3-id"),
-                        hand: String::from("Four of a Kind"),
+                        hand: String::from("Four of a Kind Eights"),
                     }
                 ],
                 winners: vec![
@@ -3028,7 +3031,7 @@ mod tests {
                     String::from("player-2-id"),
                     String::from("player-3-id")
                 ],
-                winning_hand: String::from("Four of a Kind"),
+                winning_hand: String::from("Four of a Kind Eights"),
             }
         );
     }
@@ -3113,15 +3116,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Straight Flush"),
+                        hand: String::from("Nine High Straight Flush"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Straight Flush"),
+                        hand: String::from("Nine High Straight Flush"),
                     },
                     PlayerEval {
                         id: String::from("player-3-id"),
-                        hand: String::from("Straight Flush"),
+                        hand: String::from("Nine High Straight Flush"),
                     }
                 ],
                 winners: vec![
@@ -3129,7 +3132,7 @@ mod tests {
                     String::from("player-2-id"),
                     String::from("player-3-id")
                 ],
-                winning_hand: String::from("Straight Flush"),
+                winning_hand: String::from("Nine High Straight Flush"),
             }
         );
     }
@@ -3279,15 +3282,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Straight"),
+                        hand: String::from("Nine High Straight"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Straight"),
+                        hand: String::from("Nine High Straight"),
                     }
                 ],
                 winners: vec![String::from("player-1-id"), String::from("player-2-id")],
-                winning_hand: String::from("Straight"),
+                winning_hand: String::from("Nine High Straight"),
             }
         );
     }
@@ -3437,7 +3440,7 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Straight"),
+                        hand: String::from("Six High Straight"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
@@ -3445,7 +3448,7 @@ mod tests {
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("Straight"),
+                winning_hand: String::from("Six High Straight"),
             }
         );
     }
@@ -3516,15 +3519,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Ace"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("High Card"),
+                        hand: String::from("High Card Ace"),
                     }
                 ],
                 winners: vec![String::from("player-1-id"), String::from("player-2-id")],
-                winning_hand: String::from("High Card"),
+                winning_hand: String::from("High Card Ace"),
             }
         );
     }
@@ -3596,15 +3599,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Two Pair"),
+                        hand: String::from("Two Pair, Kings and Fours"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Two Pair"),
+                        hand: String::from("Two Pair, Kings and Fours"),
                     }
                 ],
                 winners: vec![String::from("player-1-id"), String::from("player-2-id")],
-                winning_hand: String::from("Two Pair"),
+                winning_hand: String::from("Two Pair, Kings and Fours"),
             }
         );
     }
@@ -3675,15 +3678,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Three of a Kind"),
+                        hand: String::from("Three of a Kind Nines"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Three of a Kind"),
+                        hand: String::from("Three of a Kind Nines"),
                     }
                 ],
                 winners: vec![String::from("player-1-id"), String::from("player-2-id")],
-                winning_hand: String::from("Three of a Kind"),
+                winning_hand: String::from("Three of a Kind Nines"),
             }
         );
     }
@@ -3754,15 +3757,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Pair"),
+                        hand: String::from("Pair of Sevens"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Pair"),
+                        hand: String::from("Pair of Sevens"),
                     }
                 ],
                 winners: vec![String::from("player-1-id"), String::from("player-2-id")],
-                winning_hand: String::from("Pair"),
+                winning_hand: String::from("Pair of Sevens"),
             }
         );
     }
@@ -3833,15 +3836,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Flush"),
+                        hand: String::from("Ace High Flush"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Straight"),
+                        hand: String::from("Six High Straight"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("Flush"),
+                winning_hand: String::from("Ace High Flush"),
             }
         );
     }
@@ -3912,15 +3915,15 @@ mod tests {
                 players: vec![
                     PlayerEval {
                         id: String::from("player-1-id"),
-                        hand: String::from("Straight Flush"),
+                        hand: String::from("Nine High Straight Flush"),
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Straight Flush"),
+                        hand: String::from("Eight High Straight Flush"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],
-                winning_hand: String::from("Straight Flush"),
+                winning_hand: String::from("Nine High Straight Flush"),
             }
         );
     }
