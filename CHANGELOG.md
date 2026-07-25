@@ -1,3 +1,14 @@
+## [1.1.1] - 2026-07-25
+
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+- Redundant `variant` query parameter on `POST /evaluate`.
+
 ## [1.1.0] - 2026-07-25
 
 ### Added

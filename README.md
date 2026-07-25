@@ -89,7 +89,7 @@ curl localhost:8080/variants
 ```json
 [
     {
-        "http_request": "POST /evaluate?variant=five-card-draw",
+        "http_request": "POST /evaluate (body.variant=five-card-draw)",
         "display": {
             "default": "Five-card draw",
             "alternates": [
@@ -98,7 +98,7 @@ curl localhost:8080/variants
         }
     },
     {
-        "http_request": "POST /evaluate?variant=texas-hold-em",
+        "http_request": "POST /evaluate (body.variant=texas-hold-em)",
         "display": {
             "default": "Texas Hold 'em",
             "alternates": [
@@ -139,7 +139,7 @@ curl \
       "6h","5h","4h","3h","2h"
     ]
   }' \
-  "http://localhost:8080/evaluate?variant=five-card-draw"
+  "http://localhost:8080/evaluate"
 ```
 ```json
 {
@@ -194,4 +194,3 @@ make outdated
 - there are a few *touch wood* unreachable unhandled unwraps, but probably worth protecting against in case
 - environment variable the port number
 - cargo audit pipeline (PR action and scheduled cron action)
-- query parameter of `variable` in the POST evaluate seems redundant (update README examples as part of this)
