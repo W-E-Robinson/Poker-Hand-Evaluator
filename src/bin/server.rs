@@ -1,5 +1,4 @@
 use axum::{
-    extract::Query,
     http::StatusCode,
     routing::{get, post},
     Json, Router,
@@ -9,7 +8,6 @@ use poker_hand_evaluator::{
     types::{Card, ErrorType, Evaluation, Hand, Player, Rank, Suit, Variant},
 };
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -49,14 +47,14 @@ struct VariantInfo {
 async fn get_variants() -> Json<Vec<VariantInfo>> {
     let variants_response = vec![
         VariantInfo {
-            http_request: String::from("POST /evaluate?variant=five-card-draw"),
+            http_request: String::from("POST /evaluate (body.variant=five-card-draw)"),
             display: VariantDisplayInfo {
                 default: String::from("Five-card draw"),
                 alternates: vec![String::from("Cantredraw")],
             },
         },
         VariantInfo {
-            http_request: String::from("POST /evaluate?variant=texas-hold-em"),
+            http_request: String::from("POST /evaluate (body.variant=texas-hold-em)"),
             display: VariantDisplayInfo {
                 default: String::from("Texas Hold 'em"),
                 alternates: vec![
@@ -88,6 +86,12 @@ pub struct EvaluateRequest {
 }
 impl EvaluateRequest {
     pub fn into_domain(self) -> Result<Hand, String> {
+        let variant = match self.variant.as_str() {
+            "five-card-draw" => Variant::FiveCardDraw,
+            "texas-hold-em" => Variant::TexasHoldem,
+            _ => return Err(String::from("Unsupported variant provided.")),
+        };
+
         let players = self
             .players
             .into_iter()
@@ -132,11 +136,7 @@ impl EvaluateRequest {
 
         Ok(Hand {
             id: self.id,
-            variant: match self.variant.as_str() {
-                "five-card-draw" => Variant::FiveCardDraw,
-                "texas-hold-em" => Variant::TexasHoldem,
-                _ => unreachable!(),
-            },
+            variant: variant,
             players: players,
             board: board,
             burn_cards: burn_cards,
@@ -192,26 +192,8 @@ fn parse_card(string: String) -> Result<Card, String> {
     Ok(Card { rank, suit })
 }
 async fn post_evaluate(
-    Query(params): Query<HashMap<String, String>>,
     Json(body): Json<EvaluateRequest>,
 ) -> Result<Json<Evaluation>, (StatusCode, String)> {
-    let variant = params.get("variant").ok_or((
-        StatusCode::BAD_REQUEST,
-        "Missing variant query parameter.".to_string(),
-    ))?;
-
-    let is_supported_variant = match variant.as_str() {
-        "five-card-draw" => true,
-        "texas-hold-em" => true,
-        _ => false,
-    };
-    if !is_supported_variant {
-        return Err((
-            StatusCode::BAD_REQUEST,
-            "Unsupported variant provided.".to_string(),
-        ));
-    }
-
     let hand = body
         .into_domain()
         .map_err(|e| (StatusCode::BAD_REQUEST, e))?;
@@ -1033,14 +1015,14 @@ mod tests {
 
         let expected_response = vec![
             VariantInfo {
-                http_request: String::from("POST /evaluate?variant=five-card-draw"),
+                http_request: String::from("POST /evaluate (body.variant=five-card-draw)"),
                 display: VariantDisplayInfo {
                     default: String::from("Five-card draw"),
                     alternates: vec![String::from("Cantredraw")],
                 },
             },
             VariantInfo {
-                http_request: String::from("POST /evaluate?variant=texas-hold-em"),
+                http_request: String::from("POST /evaluate (body.variant=texas-hold-em)"),
                 display: VariantDisplayInfo {
                     default: String::from("Texas Hold 'em"),
                     alternates: vec![
@@ -1072,12 +1054,12 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_post_evaluate_non_found_variant_error() {
+    async fn test_unsupported_variant_error() {
         let app = app();
 
         let body = EvaluateRequest {
             id: String::from("hand-id"),
-            variant: String::from("five-card-draw"),
+            variant: String::from("not-a-variant"),
             players: vec![EvaluateRequestPlayer {
                 id: String::from("player-1-id"),
                 cards: vec![String::from("Ac")],
@@ -1092,40 +1074,6 @@ mod tests {
         let response = app
             .oneshot(
                 Request::post("/evaluate")
-                    .header(CONTENT_TYPE, "application/json")
-                    .body(Body::from(json))
-                    .unwrap(),
-            )
-            .await
-            .unwrap();
-
-        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
-
-        let body = response.into_body().collect().await.unwrap().to_bytes();
-        assert_eq!(&body[..], b"Missing variant query parameter.");
-    }
-
-    #[tokio::test]
-    async fn test_unsupported_variant_error() {
-        let app = app();
-
-        let body = EvaluateRequest {
-            id: String::from("hand-id"),
-            variant: String::from("five-card-draw"),
-            players: vec![EvaluateRequestPlayer {
-                id: String::from("player-1-id"),
-                cards: vec![String::from("Ac")],
-            }],
-            remaining_deck: vec![String::from("Ac")],
-            board: None,
-            burn_cards: None,
-            discarded_cards: None,
-        };
-        let json = serde_json::to_string(&body).unwrap();
-
-        let response = app
-            .oneshot(
-                Request::post("/evaluate?variant=not-a-variant")
                     .header(CONTENT_TYPE, "application/json")
                     .body(Body::from(json))
                     .unwrap(),
@@ -1159,7 +1107,7 @@ mod tests {
 
         let response = app
             .oneshot(
-                Request::post("/evaluate?variant=five-card-draw")
+                Request::post("/evaluate")
                     .header(CONTENT_TYPE, "application/json")
                     .body(Body::from(json))
                     .unwrap(),
@@ -1254,7 +1202,7 @@ mod tests {
 
         let response = app
             .oneshot(
-                Request::post("/evaluate?variant=five-card-draw")
+                Request::post("/evaluate")
                     .header(CONTENT_TYPE, "application/json")
                     .body(Body::from(json))
                     .unwrap(),
@@ -1357,7 +1305,7 @@ mod tests {
 
         let response = app
             .oneshot(
-                Request::post("/evaluate?variant=texas-hold-em")
+                Request::post("/evaluate")
                     .header(CONTENT_TYPE, "application/json")
                     .body(Body::from(json))
                     .unwrap(),
