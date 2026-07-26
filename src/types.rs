@@ -111,6 +111,7 @@ pub struct Player {
 pub enum Variant {
     FiveCardDraw,
     TexasHoldem,
+    // FourCardOmahaHi,
 }
 impl fmt::Display for Variant {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

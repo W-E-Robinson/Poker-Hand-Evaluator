@@ -64,6 +64,17 @@ async fn get_variants() -> Json<Vec<VariantInfo>> {
                 ],
             },
         },
+        VariantInfo {
+            http_request: String::from("POST /evaluate (body.variant=four-card-omaha-hi)"),
+            display: VariantDisplayInfo {
+                default: String::from("Omaha Hold 'em"),
+                alternates: vec![
+                    String::from("Omaha holdem"),
+                    String::from("Omaha"),
+                    String::from("Four Card Omaha"),
+                ],
+            },
+        },
     ];
 
     Json(variants_response)
@@ -1029,6 +1040,17 @@ mod tests {
                         String::from("Texas holdem"),
                         String::from("hold 'em"),
                         String::from("holdem"),
+                    ],
+                },
+            },
+            VariantInfo {
+                http_request: String::from("POST /evaluate (body.variant=four-card-omaha-hi)"),
+                display: VariantDisplayInfo {
+                    default: String::from("Omaha Hold 'em"),
+                    alternates: vec![
+                        String::from("Omaha holdem"),
+                        String::from("Omaha"),
+                        String::from("Four Card Omaha"),
                     ],
                 },
             },
