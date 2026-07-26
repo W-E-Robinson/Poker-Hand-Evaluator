@@ -176,4 +176,67 @@ mod tests {
         let result = validate_number_total_cards(&hand);
         assert!(result.is_ok());
     }
+
+    #[test]
+    fn test_invalid_number_cards_four_card_omaha_hi() {
+        let mut deck = full_deck();
+        let player_1_cards = deck.drain(0..4).collect();
+        let player_2_cards = deck.drain(0..4).collect();
+        let board = deck.drain(0..5).collect();
+        let burn_cards = deck.drain(0..3).collect();
+        deck.pop();
+
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: player_1_cards,
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: player_2_cards,
+                },
+            ],
+            board: Some(board),
+            burn_cards: Some(burn_cards),
+            discarded_cards: None,
+            remaining_deck: deck,
+        };
+
+        let result = validate_number_total_cards(&hand).unwrap_err();
+        assert_eq!(result, "Exactly 52 cards must be provided in total.",);
+    }
+
+    #[test]
+    fn test_valid_number_cards_four_card_omaha_hi() {
+        let mut deck = full_deck();
+        let player_1_cards = deck.drain(0..4).collect();
+        let player_2_cards = deck.drain(0..4).collect();
+        let board = deck.drain(0..5).collect();
+        let burn_cards = deck.drain(0..3).collect();
+
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: player_1_cards,
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: player_2_cards,
+                },
+            ],
+            board: Some(board),
+            burn_cards: Some(burn_cards),
+            discarded_cards: None,
+            remaining_deck: deck,
+        };
+
+        let result = validate_number_total_cards(&hand);
+        assert!(result.is_ok());
+    }
 }

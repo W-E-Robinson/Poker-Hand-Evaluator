@@ -1,10 +1,12 @@
 mod evaluate_five_cards_hi;
+mod evaluate_omaha_five_cards_hi;
 mod evaluate_seven_cards_hi;
 
 use crate::{
     constants::{BROADWAY_STRAIGHT_INDICATOR, WHEEL_STRAIGHT_INDICATOR},
     evaluation::{
         evaluate_five_cards_hi::evaluate_five_cards_hi,
+        evaluate_omaha_five_cards_hi::evaluate_omaha_five_cards_hi,
         evaluate_seven_cards_hi::evaluate_seven_cards_hi,
     },
     types::{Evaluation, Hand, PlayerEval, Rank, Variant},
@@ -32,6 +34,10 @@ pub fn evaluate(hand: Hand) -> Evaluation {
                     result: evaluate_seven_cards_hi(&all_cards),
                 }
             }
+            Variant::FourCardOmahaHi => PlayerEvaluatedHand {
+                id: player.id.clone(),
+                result: evaluate_omaha_five_cards_hi(&player.cards /*, &hand.board*/),
+            },
         })
         .collect();
 

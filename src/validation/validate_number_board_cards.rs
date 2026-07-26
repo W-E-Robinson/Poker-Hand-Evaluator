@@ -260,4 +260,165 @@ mod tests {
         let result = validate_number_board_cards(&hand);
         assert!(result.is_ok());
     }
+
+    #[test]
+    fn test_no_board_given_four_card_omaha_hi() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            players: vec![Player {
+                id: String::from("player-1-id"),
+                cards: vec![
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Queen,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Jack,
+                        suit: Suit::Heart,
+                    },
+                ],
+            }],
+            board: None,
+            burn_cards: Some(vec![]),
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Diamond,
+            }],
+        };
+
+        let result = validate_number_board_cards(&hand).unwrap_err();
+        assert_eq!(
+            result,
+            "There should be exactly 5 board cards for Omaha Hold 'em.",
+        );
+    }
+
+    #[test]
+    fn test_incorrect_number_board_cards_four_card_omaha_hi() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            players: vec![Player {
+                id: String::from("player-1-id"),
+                cards: vec![
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Queen,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Jack,
+                        suit: Suit::Heart,
+                    },
+                ],
+            }],
+            board: Some(vec![
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: Some(vec![]),
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Diamond,
+            }],
+        };
+
+        let result = validate_number_board_cards(&hand).unwrap_err();
+        assert_eq!(
+            result,
+            "There should be exactly 5 board cards for Omaha Hold 'em.",
+        );
+    }
+
+    #[test]
+    fn test_correct_number_board_cards_four_card_omaha_hi() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            players: vec![Player {
+                id: String::from("player-1-id"),
+                cards: vec![
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Queen,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Jack,
+                        suit: Suit::Heart,
+                    },
+                ],
+            }],
+            board: Some(vec![
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: Some(vec![]),
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Diamond,
+            }],
+        };
+
+        let result = validate_number_board_cards(&hand);
+        assert!(result.is_ok());
+    }
 }
