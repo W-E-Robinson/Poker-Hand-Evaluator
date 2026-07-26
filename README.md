@@ -16,6 +16,7 @@ This repo contains library code for evaluating poker hands. It also contains a d
 pub enum Variant {
     FiveCardDraw,
     TexasHoldem,
+    FourCardOmahaHi,
 }
 ```
 
@@ -108,6 +109,17 @@ curl localhost:8080/variants
             ]
         }
     }
+    {
+        "http_request": "POST /evaluate (body.variant=four-card-omaha-hi)",
+        "display": {
+            "default": "Omaha hold 'em",
+            "alternates": [
+                "Omaha holdem",
+                "Omaha",
+                "Four Card Omaha"
+            ]
+        }
+    }
 ]
 ```
 
@@ -186,10 +198,8 @@ make outdated
 
 ### Future
 - further variants:
-    - 4 card omaha hi
     - 5 card omaha hi
     - 6 card omaha hi
-- more precise hand displays (e.g. Straight -> Six High Straight)
 - improved logging in server
 - there are a few *touch wood* unreachable unhandled unwraps / unreachables, but probably worth protecting against in case
 - environment variable the port number
