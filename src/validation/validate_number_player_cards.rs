@@ -300,4 +300,131 @@ mod tests {
         let result = validate_number_player_cards(&hand);
         assert!(result.is_ok())
     }
+
+    #[test]
+    fn test_invalid_cards_per_player_four_card_omaha_hi() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Diamond,
+                    }],
+                },
+                Player {
+                    id: String::from("player-3-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+            burn_cards: Some(vec![]),
+            board: Some(vec![]),
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Spade,
+            }],
+        };
+
+        let result = validate_number_player_cards(&hand).unwrap_err();
+        assert_eq!(result, "Each provided player should have 4 cards for Omaha Hold 'em. Players with the incorrect number of cards: player-2-id, player-3-id.",);
+    }
+
+    #[test]
+    fn test_valid_cards_per_player_four_card_omaha_hi() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+            ],
+            burn_cards: Some(vec![]),
+            board: Some(vec![]),
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Spade,
+            }],
+        };
+
+        let result = validate_number_player_cards(&hand);
+        assert!(result.is_ok())
+    }
 }

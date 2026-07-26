@@ -10,7 +10,7 @@ pub fn validate_number_discarded_cards(hand: &Hand) -> Result<(), String> {
                 ));
             }
         }
-        Variant::TexasHoldem => {
+        Variant::TexasHoldem | Variant::FourCardOmahaHi => {
             if hand.discarded_cards.is_some() {
                 return Err(format!(
                     "There should be no discarded cards for {}.",
@@ -172,6 +172,90 @@ mod tests {
                     },
                     Card {
                         rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                ],
+            }],
+            burn_cards: Some(vec![]),
+            board: Some(vec![]),
+            discarded_cards: None,
+            remaining_deck: vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Diamond,
+            }],
+        };
+
+        let result = validate_number_discarded_cards(&hand);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_discarded_cards_given_four_card_omaha_hi() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            players: vec![Player {
+                id: String::from("player-1-id"),
+                cards: vec![
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Queen,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Jack,
+                        suit: Suit::Heart,
+                    },
+                ],
+            }],
+            burn_cards: Some(vec![]),
+            board: Some(vec![]),
+            discarded_cards: Some(vec![Card {
+                rank: Rank::Ace,
+                suit: Suit::Diamond,
+            }]),
+            remaining_deck: vec![Card {
+                rank: Rank::King,
+                suit: Suit::Diamond,
+            }],
+        };
+
+        let result = validate_number_discarded_cards(&hand).unwrap_err();
+        assert_eq!(
+            result,
+            "There should be no discarded cards for Omaha Hold 'em.",
+        );
+    }
+
+    #[test]
+    fn test_none_discarded_cards_four_card_omaha_hi() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            players: vec![Player {
+                id: String::from("player-1-id"),
+                cards: vec![
+                    Card {
+                        rank: Rank::Ace,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::King,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Queen,
+                        suit: Suit::Heart,
+                    },
+                    Card {
+                        rank: Rank::Jack,
                         suit: Suit::Heart,
                     },
                 ],
