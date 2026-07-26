@@ -100,6 +100,7 @@ impl EvaluateRequest {
         let variant = match self.variant.as_str() {
             "five-card-draw" => Variant::FiveCardDraw,
             "texas-hold-em" => Variant::TexasHoldem,
+            "four-card-omaha-hi" => Variant::FourCardOmahaHi,
             _ => return Err(String::from("Unsupported variant provided.")),
         };
 
