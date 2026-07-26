@@ -1,3 +1,14 @@
+## [2.1.0] - 2026-07-26
+
+### Added
+- Four Card Omaha Hold 'em poker variant evaluation supported.
+
+### Changed
+
+### Fixed
+
+### Removed
+
 ## [2.0.0] - 2026-07-26
 
 ### Added
