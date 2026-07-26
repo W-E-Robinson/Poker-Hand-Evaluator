@@ -1,3 +1,14 @@
+## [2.0.0] - 2026-07-26
+
+### Added
+
+### Changed
+- BREAKING: Hand descriptions now include rank detail for every hand type (`"Two Pair"` → `"Two Pair, Kings and Queens"`, `"Straight"` → `"King High Straight"` etc).
+
+### Fixed
+
+### Removed
+
 ## [1.1.1] - 2026-07-25
 
 ### Added
