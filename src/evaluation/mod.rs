@@ -7,7 +7,7 @@ use crate::{
         evaluate_five_cards_hi::evaluate_five_cards_hi,
         evaluate_seven_cards_hi::evaluate_seven_cards_hi,
     },
-    types::{Evaluation, Hand, PlayerEval, Variant},
+    types::{Evaluation, Hand, PlayerEval, Rank, Variant},
 };
 
 struct PlayerEvaluatedHand {
@@ -107,31 +107,105 @@ impl HandRanks {
             _ => HandRankMultipliers::HighCard as usize,
         }
     }
-    pub fn generate_hand_description(&self, rank_value: usize) -> String {
+    fn find_highest_rank_x_num_cards(values: &[usize; 13], num_cards: usize) -> Rank {
+        let highest_idx = values
+            .iter()
+            .rev()
+            .position(|&value| value == num_cards)
+            .unwrap();
+        match highest_idx {
+            0 => Rank::Ace,
+            1 => Rank::King,
+            2 => Rank::Queen,
+            3 => Rank::Jack,
+            4 => Rank::Ten,
+            5 => Rank::Nine,
+            6 => Rank::Eight,
+            7 => Rank::Seven,
+            8 => Rank::Six,
+            9 => Rank::Five,
+            10 => Rank::Four,
+            11 => Rank::Three,
+            12 => Rank::Two,
+            _ => unreachable!(),
+        }
+    }
+    pub fn generate_hand_description(&self, pre_rank_value: usize, values: [usize; 13]) -> String {
+        fn plural_adjust(rank: Rank) -> String {
+            format!(
+                "{}{}",
+                rank.to_string(),
+                if rank == Rank::Six { "es" } else { "s" }
+            )
+        }
+
         match true {
             _ if self.straight_flush => {
-                if rank_value == BROADWAY_STRAIGHT_INDICATOR {
+                if pre_rank_value == BROADWAY_STRAIGHT_INDICATOR {
                     return String::from("Royal Flush");
-                } else if rank_value == WHEEL_STRAIGHT_INDICATOR {
+                } else if pre_rank_value == WHEEL_STRAIGHT_INDICATOR {
                     return String::from("Wheel Flush");
                 }
-                String::from("Straight Flush")
+                format!(
+                    "{} High Straight Flush",
+                    HandRanks::find_highest_rank_x_num_cards(&values, 1).to_string()
+                )
             }
-            _ if self.four_of_a_kind => String::from("Four of a Kind"),
-            _ if self.full_house => String::from("Full House"),
-            _ if self.flush => String::from("Flush"),
+            _ if self.four_of_a_kind => {
+                let rank = HandRanks::find_highest_rank_x_num_cards(&values, 4);
+                format!("Four of a Kind {}", plural_adjust(rank))
+            }
+            _ if self.full_house => {
+                let high_rank = HandRanks::find_highest_rank_x_num_cards(&values, 3);
+                let low_rank = HandRanks::find_highest_rank_x_num_cards(&values, 2);
+                format!(
+                    "Full House, {} full of {}",
+                    plural_adjust(high_rank),
+                    plural_adjust(low_rank)
+                )
+            }
+            _ if self.flush => {
+                format!(
+                    "{} High Flush",
+                    HandRanks::find_highest_rank_x_num_cards(&values, 1).to_string()
+                )
+            }
             _ if self.straight => {
-                if rank_value == BROADWAY_STRAIGHT_INDICATOR {
+                if pre_rank_value == BROADWAY_STRAIGHT_INDICATOR {
                     return String::from("Broadway");
-                } else if rank_value == WHEEL_STRAIGHT_INDICATOR {
+                } else if pre_rank_value == WHEEL_STRAIGHT_INDICATOR {
                     return String::from("Wheel");
                 }
-                String::from("Straight")
+                format!(
+                    "{} High Straight",
+                    HandRanks::find_highest_rank_x_num_cards(&values, 1).to_string()
+                )
             }
-            _ if self.three_of_a_kind => String::from("Three of a Kind"),
-            _ if self.two_pair => String::from("Two Pair"),
-            _ if self.pair => String::from("Pair"),
-            _ => String::from("High Card"),
+            _ if self.three_of_a_kind => {
+                let rank = HandRanks::find_highest_rank_x_num_cards(&values, 3);
+                format!("Three of a Kind {}", plural_adjust(rank))
+            }
+            _ if self.two_pair => {
+                let high_rank = HandRanks::find_highest_rank_x_num_cards(&values, 2);
+                let mut remaining_values = values;
+                remaining_values[high_rank.clone() as usize] = 0;
+                let low_rank = HandRanks::find_highest_rank_x_num_cards(&remaining_values, 2);
+                format!(
+                    "Two Pair, {} and {}",
+                    plural_adjust(high_rank),
+                    plural_adjust(low_rank)
+                )
+            }
+            _ if self.pair => {
+                let rank = HandRanks::find_highest_rank_x_num_cards(&values, 2);
+                format!("Pair of {}", plural_adjust(rank),)
+            }
+            _ => {
+                format!(
+                    "High Card {}",
+                    HandRanks::find_highest_rank_x_num_cards(&values, 1).to_string()
+                )
+            }
         }
     }
 }
@@ -279,6 +353,9 @@ mod tests {
 
     #[test]
     fn test_hand_ranks_impl_generate_hand_description_royal_flush() {
+        let mut values = [0; 13];
+        values[12] = 1;
+
         let hand_rank = HandRanks {
             straight_flush: true,
             four_of_a_kind: true,
@@ -290,13 +367,16 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(15_872),
+            hand_rank.generate_hand_description(15_872, values),
             String::from("Royal Flush")
         );
     }
 
     #[test]
     fn test_hand_ranks_impl_generate_hand_description_wheel_flush() {
+        let mut values = [0; 13];
+        values[3] = 1;
+
         let hand_rank = HandRanks {
             straight_flush: true,
             four_of_a_kind: true,
@@ -308,13 +388,16 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(8_222),
+            hand_rank.generate_hand_description(8_222, values),
             String::from("Wheel Flush")
         );
     }
 
     #[test]
     fn test_hand_ranks_impl_generate_hand_description_straight_flush() {
+        let mut values = [0; 13];
+        values[11] = 1;
+
         let hand_rank = HandRanks {
             straight_flush: true,
             four_of_a_kind: true,
@@ -326,13 +409,16 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(7_936),
+            hand_rank.generate_hand_description(7_936, values),
             String::from("King High Straight Flush")
         );
     }
 
     #[test]
     fn test_hand_ranks_impl_generate_hand_description_four_of_a_kind() {
+        let mut values = [0; 13];
+        values[12] = 4;
+
         let hand_rank = HandRanks {
             straight_flush: false,
             four_of_a_kind: true,
@@ -344,13 +430,38 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(268_439_552),
+            hand_rank.generate_hand_description(268_439_552, values),
             String::from("Four of a Kind Aces")
         );
     }
 
     #[test]
+    fn test_hand_ranks_impl_generate_hand_description_four_of_a_kind_sixes() {
+        let mut values = [0; 13];
+        values[4] = 4;
+
+        let hand_rank = HandRanks {
+            straight_flush: false,
+            four_of_a_kind: true,
+            full_house: true,
+            flush: true,
+            straight: true,
+            three_of_a_kind: true,
+            two_pair: true,
+            pair: true,
+        };
+        assert_eq!(
+            hand_rank.generate_hand_description(0, values),
+            String::from("Four of a Kind Sixes")
+        );
+    }
+
+    #[test]
     fn test_hand_ranks_impl_generate_hand_description_full_house() {
+        let mut values = [0; 13];
+        values[12] = 3;
+        values[11] = 2;
+
         let hand_rank = HandRanks {
             straight_flush: false,
             four_of_a_kind: false,
@@ -362,13 +473,38 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(268_435_456),
+            hand_rank.generate_hand_description(268_435_456, values),
             String::from("Full House, Aces full of Kings")
         );
     }
 
     #[test]
+    fn test_hand_ranks_impl_generate_hand_description_full_house_sixes() {
+        let mut values = [0; 13];
+        values[4] = 3;
+        values[2] = 2;
+
+        let hand_rank = HandRanks {
+            straight_flush: false,
+            four_of_a_kind: false,
+            full_house: true,
+            flush: true,
+            straight: true,
+            three_of_a_kind: true,
+            two_pair: true,
+            pair: true,
+        };
+        assert_eq!(
+            hand_rank.generate_hand_description(0, values),
+            String::from("Full House, Sixes full of Fours")
+        );
+    }
+
+    #[test]
     fn test_hand_ranks_impl_generate_hand_description_flush() {
+        let mut values = [0; 13];
+        values[12] = 1;
+
         let hand_rank = HandRanks {
             straight_flush: false,
             four_of_a_kind: false,
@@ -380,13 +516,16 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(9_320),
+            hand_rank.generate_hand_description(9_320, values),
             String::from("Ace High Flush")
         );
     }
 
     #[test]
     fn test_hand_ranks_impl_generate_hand_description_broadway() {
+        let mut values = [0; 13];
+        values[12] = 1;
+
         let hand_rank = HandRanks {
             straight_flush: false,
             four_of_a_kind: false,
@@ -398,13 +537,16 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(15_872),
+            hand_rank.generate_hand_description(15_872, values),
             String::from("Broadway")
         );
     }
 
     #[test]
     fn test_hand_ranks_impl_generate_hand_description_wheel() {
+        let mut values = [0; 13];
+        values[3] = 1;
+
         let hand_rank = HandRanks {
             straight_flush: false,
             four_of_a_kind: false,
@@ -416,13 +558,16 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(8_222),
+            hand_rank.generate_hand_description(8_222, values),
             String::from("Wheel")
         );
     }
 
     #[test]
     fn test_hand_ranks_impl_generate_hand_description_straight() {
+        let mut values = [0; 13];
+        values[11] = 1;
+
         let hand_rank = HandRanks {
             straight_flush: false,
             four_of_a_kind: false,
@@ -434,13 +579,16 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(7_936),
+            hand_rank.generate_hand_description(7_936, values),
             String::from("King High Straight")
         );
     }
 
     #[test]
     fn test_hand_ranks_impl_generate_hand_description_three_of_a_kind() {
+        let mut values = [0; 13];
+        values[12] = 3;
+
         let hand_rank = HandRanks {
             straight_flush: false,
             four_of_a_kind: false,
@@ -452,13 +600,38 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(201_332_736),
+            hand_rank.generate_hand_description(201_332_736, values),
             String::from("Three of a Kind Aces")
         );
     }
 
     #[test]
+    fn test_hand_ranks_impl_generate_hand_description_three_of_a_kind_sixes() {
+        let mut values = [0; 13];
+        values[4] = 3;
+
+        let hand_rank = HandRanks {
+            straight_flush: false,
+            four_of_a_kind: false,
+            full_house: false,
+            flush: false,
+            straight: false,
+            three_of_a_kind: true,
+            two_pair: true,
+            pair: true,
+        };
+        assert_eq!(
+            hand_rank.generate_hand_description(0, values),
+            String::from("Three of a Kind Sixes")
+        );
+    }
+
+    #[test]
     fn test_hand_ranks_impl_generate_hand_description_two_pair() {
+        let mut values = [0; 13];
+        values[12] = 2;
+        values[11] = 2;
+
         let hand_rank = HandRanks {
             straight_flush: false,
             four_of_a_kind: false,
@@ -470,13 +643,60 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(201_328_640),
+            hand_rank.generate_hand_description(201_328_640, values),
             String::from("Two Pair, Aces and Kings")
         );
     }
 
     #[test]
+    fn test_hand_ranks_impl_generate_hand_description_two_pair_sixes_high() {
+        let mut values = [0; 13];
+        values[4] = 2;
+        values[2] = 2;
+
+        let hand_rank = HandRanks {
+            straight_flush: false,
+            four_of_a_kind: false,
+            full_house: false,
+            flush: false,
+            straight: false,
+            three_of_a_kind: false,
+            two_pair: true,
+            pair: true,
+        };
+        assert_eq!(
+            hand_rank.generate_hand_description(0, values),
+            String::from("Two Pair, Sixes and Fours")
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_impl_generate_hand_description_two_pair_sixes_low() {
+        let mut values = [0; 13];
+        values[7] = 2;
+        values[4] = 2;
+
+        let hand_rank = HandRanks {
+            straight_flush: false,
+            four_of_a_kind: false,
+            full_house: false,
+            flush: false,
+            straight: false,
+            three_of_a_kind: false,
+            two_pair: true,
+            pair: true,
+        };
+        assert_eq!(
+            hand_rank.generate_hand_description(0, values),
+            String::from("Two Pair, Nines and Sixes")
+        );
+    }
+
+    #[test]
     fn test_hand_ranks_impl_generate_hand_description_pair() {
+        let mut values = [0; 13];
+        values[12] = 2;
+
         let hand_rank = HandRanks {
             straight_flush: false,
             four_of_a_kind: false,
@@ -488,13 +708,37 @@ mod tests {
             pair: true,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(134_224_896),
+            hand_rank.generate_hand_description(134_224_896, values),
             String::from("Pair of Aces")
         );
     }
 
     #[test]
+    fn test_hand_ranks_impl_generate_hand_description_pair_sixes() {
+        let mut values = [0; 13];
+        values[4] = 2;
+
+        let hand_rank = HandRanks {
+            straight_flush: false,
+            four_of_a_kind: false,
+            full_house: false,
+            flush: false,
+            straight: false,
+            three_of_a_kind: false,
+            two_pair: false,
+            pair: true,
+        };
+        assert_eq!(
+            hand_rank.generate_hand_description(0, values),
+            String::from("Pair of Sixes")
+        );
+    }
+
+    #[test]
     fn test_hand_ranks_impl_generate_hand_description_high_card() {
+        let mut values = [0; 13];
+        values[12] = 1;
+
         let hand_rank = HandRanks {
             straight_flush: false,
             four_of_a_kind: false,
@@ -506,8 +750,151 @@ mod tests {
             pair: false,
         };
         assert_eq!(
-            hand_rank.generate_hand_description(9_986),
+            hand_rank.generate_hand_description(9_986, values),
             String::from("High Card Ace")
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_ace_return() {
+        let mut values = [0; 13];
+        values[12] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::Ace,
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_king_return() {
+        let mut values = [0; 13];
+        values[11] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::King,
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_queen_return() {
+        let mut values = [0; 13];
+        values[10] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::Queen,
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_jack_return() {
+        let mut values = [0; 13];
+        values[9] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::Jack,
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_ten_return() {
+        let mut values = [0; 13];
+        values[8] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::Ten,
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_nine_return() {
+        let mut values = [0; 13];
+        values[7] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::Nine,
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_eight_return() {
+        let mut values = [0; 13];
+        values[6] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::Eight,
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_seven_return() {
+        let mut values = [0; 13];
+        values[5] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::Seven,
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_six_return() {
+        let mut values = [0; 13];
+        values[4] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::Six,
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_five_return() {
+        let mut values = [0; 13];
+        values[3] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::Five,
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_four_return() {
+        let mut values = [0; 13];
+        values[2] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::Four,
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_three_return() {
+        let mut values = [0; 13];
+        values[1] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::Three,
+        );
+    }
+
+    #[test]
+    fn test_hand_ranks_find_highest_rank_x_num_cards_two_return() {
+        let mut values = [0; 13];
+        values[0] = 1;
+
+        assert_eq!(
+            HandRanks::find_highest_rank_x_num_cards(&values, 1),
+            Rank::Two,
         );
     }
 

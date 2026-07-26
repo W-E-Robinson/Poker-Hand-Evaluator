@@ -65,7 +65,7 @@ pub fn evaluate_five_cards_hi(cards: &Vec<Card>) -> SingleHandEval {
     };
 
     SingleHandEval {
-        hand_description: hand_ranks.generate_hand_description(pre_adjustment_rank_value),
+        hand_description: hand_ranks.generate_hand_description(pre_adjustment_rank_value, values),
         rank_value: post_adjustment_rank_value,
     }
 }

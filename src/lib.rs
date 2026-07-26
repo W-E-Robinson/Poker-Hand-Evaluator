@@ -554,7 +554,7 @@ mod tests {
                     },
                     PlayerEval {
                         id: String::from("player-2-id"),
-                        hand: String::from("Pair"),
+                        hand: String::from("Pair of Tens"),
                     }
                 ],
                 winners: vec![String::from("player-1-id")],

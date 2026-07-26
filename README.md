@@ -191,6 +191,6 @@ make outdated
     - 6 card omaha hi
 - more precise hand displays (e.g. Straight -> Six High Straight)
 - improved logging in server
-- there are a few *touch wood* unreachable unhandled unwraps, but probably worth protecting against in case
+- there are a few *touch wood* unreachable unhandled unwraps / unreachables, but probably worth protecting against in case
 - environment variable the port number
 - cargo audit pipeline (PR action and scheduled cron action)
