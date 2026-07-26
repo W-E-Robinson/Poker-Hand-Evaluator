@@ -9,12 +9,15 @@ pub fn evaluate_omaha_five_cards_hi(
     player_cards: &Vec<Card>,
     board_cards: &Vec<Card>,
 ) -> SingleHandEval {
-    let combinations = player_cards.iter().combinations(5);
     let mut evals = Vec::new();
 
-    for comb in combinations.into_iter() {
-        let comb: Vec<Card> = comb.into_iter().cloned().collect();
-        evals.push(evaluate_five_cards_hi(&comb));
+    for hole in player_cards.iter().combinations(2) {
+        for board in board_cards.iter().combinations(3) {
+            let mut hand: Vec<Card> = hole.clone().into_iter().cloned().collect();
+            hand.extend(board.into_iter().cloned());
+
+            evals.push(evaluate_five_cards_hi(&hand));
+        }
     }
 
     evals

@@ -28,7 +28,7 @@ pub fn evaluate(hand: Hand) -> Evaluation {
             },
             Variant::TexasHoldem => {
                 let mut all_cards = player.cards.clone();
-                all_cards.extend(hand.board.clone().unwrap_or_default());
+                all_cards.extend(hand.board.clone().unwrap());
                 PlayerEvaluatedHand {
                     id: player.id.clone(),
                     result: evaluate_seven_cards_hi(&all_cards),
@@ -36,10 +36,7 @@ pub fn evaluate(hand: Hand) -> Evaluation {
             }
             Variant::FourCardOmahaHi => PlayerEvaluatedHand {
                 id: player.id.clone(),
-                // result: evaluate_omaha_five_cards_hi(&player.cards /*, &hand.board*/),
-                result: evaluate_omaha_five_cards_hi(&player.cards, &player.cards), // LIME:
-                                                                                    // placholder
-                                                                                    // to build
+                result: evaluate_omaha_five_cards_hi(&player.cards, &hand.board.as_ref().unwrap()),
             },
         })
         .collect();
