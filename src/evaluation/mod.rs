@@ -36,7 +36,10 @@ pub fn evaluate(hand: Hand) -> Evaluation {
             }
             Variant::FourCardOmahaHi => PlayerEvaluatedHand {
                 id: player.id.clone(),
-                result: evaluate_omaha_five_cards_hi(&player.cards /*, &hand.board*/),
+                // result: evaluate_omaha_five_cards_hi(&player.cards /*, &hand.board*/),
+                result: evaluate_omaha_five_cards_hi(&player.cards, &player.cards), // LIME:
+                                                                                    // placholder
+                                                                                    // to build
             },
         })
         .collect();
@@ -4317,6 +4320,1135 @@ mod tests {
                 ],
                 winners: vec![String::from("player-1-id")],
                 winning_hand: String::from("Nine High Straight Flush"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_four_card_omaha_hi_two_player_royal_flush_vs_pair_single_winner() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Royal Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Pair of Nines"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Royal Flush"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_four_card_omaha_hi_two_player_quads_beats_full_house_using_shared_board_pairs()
+    {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            board: Some(vec![
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Four of a Kind Kings"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Full House, Jacks full of Kings"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Four of a Kind Kings"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_four_card_omaha_hi_two_player_flush_beats_straight_single_winner() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Six,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Five,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Eight,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Ace High Flush"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Nine High Straight"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Ace High Flush"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_four_card_omaha_hi_two_player_trip_in_hole_trap_loses_to_legitimate_two_pair()
+    {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            board: Some(vec![
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Queen,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Pair of Aces"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Two Pair, Kings and Queens"),
+                    }
+                ],
+                winners: vec![String::from("player-2-id")],
+                winning_hand: String::from("Two Pair, Kings and Queens"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_four_card_omaha_hi_two_player_two_pair_in_hole_is_only_a_pair_single_winner() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Three,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Heart,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Ten,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Pair of Aces"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Pair of Queens"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Pair of Aces"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_four_card_omaha_hi_two_player_one_card_flush_trap_loses_to_two_card_flush() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Club,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Eight,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ten,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Eight,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("High Card Ace"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Ace High Flush"),
+                    }
+                ],
+                winners: vec![String::from("player-2-id")],
+                winning_hand: String::from("Ace High Flush"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_four_card_omaha_hi_two_player_four_flush_in_hole_no_flush_loses_to_a_pair() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Jack,
+                    suit: Suit::Spade,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("High Card Ace"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Pair of Fives"),
+                    }
+                ],
+                winners: vec![String::from("player-2-id")],
+                winning_hand: String::from("Pair of Fives"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_four_card_omaha_hi_two_player_quad_kings_on_board_becomes_trips_no_chop_kicker_wins(
+    ) {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            board: Some(vec![
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Heart,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Nine,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Four,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Three of a Kind Kings"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Three of a Kind Kings"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id")],
+                winning_hand: String::from("Three of a Kind Kings"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_four_card_omaha_hi_three_player_straight_chop_via_different_hole_bookends_one_loser(
+    ) {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ten,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Eight,
+                    suit: Suit::Spade,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Two,
+                    suit: Suit::Diamond,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Spade,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Seven,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-3-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Club,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Jack High Straight"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Jack High Straight"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-3-id"),
+                        hand: String::from("High Card Ace"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id"), String::from("player-2-id")],
+                winning_hand: String::from("Jack High Straight"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_four_card_omaha_hi_three_player_two_way_chop_via_board_pair_kickers_one_loser()
+    {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            board: Some(vec![
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::Ace,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::King,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-3-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Jack,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Ten,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Eight,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Pair of Aces"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Pair of Aces"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-3-id"),
+                        hand: String::from("Pair of Aces"),
+                    }
+                ],
+                winners: vec![String::from("player-1-id"), String::from("player-2-id")],
+                winning_hand: String::from("Pair of Aces"),
+            }
+        );
+    }
+
+    #[test]
+    fn test_evaluate_four_card_omaha_hi_three_player_three_way_chop_identical_kicker_ranks() {
+        let hand = Hand {
+            id: String::from("hand-id"),
+            variant: Variant::FourCardOmahaHi,
+            board: Some(vec![
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Heart,
+                },
+                Card {
+                    rank: Rank::King,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Nine,
+                    suit: Suit::Club,
+                },
+                Card {
+                    rank: Rank::Seven,
+                    suit: Suit::Diamond,
+                },
+                Card {
+                    rank: Rank::Four,
+                    suit: Suit::Spade,
+                },
+            ]),
+            burn_cards: None,
+            discarded_cards: None,
+            remaining_deck: vec![],
+            players: vec![
+                Player {
+                    id: String::from("player-1-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Club,
+                        },
+                        Card {
+                            rank: Rank::Three,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-2-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Spade,
+                        },
+                        Card {
+                            rank: Rank::Five,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Six,
+                            suit: Suit::Diamond,
+                        },
+                    ],
+                },
+                Player {
+                    id: String::from("player-3-id"),
+                    cards: vec![
+                        Card {
+                            rank: Rank::Ace,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Queen,
+                            suit: Suit::Heart,
+                        },
+                        Card {
+                            rank: Rank::Eight,
+                            suit: Suit::Diamond,
+                        },
+                        Card {
+                            rank: Rank::Two,
+                            suit: Suit::Heart,
+                        },
+                    ],
+                },
+            ],
+        };
+        assert_eq!(
+            evaluate(hand),
+            Evaluation {
+                id: String::from("hand-id"),
+                players: vec![
+                    PlayerEval {
+                        id: String::from("player-1-id"),
+                        hand: String::from("Pair of Kings"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-2-id"),
+                        hand: String::from("Pair of Kings"),
+                    },
+                    PlayerEval {
+                        id: String::from("player-3-id"),
+                        hand: String::from("Pair of Kings"),
+                    }
+                ],
+                winners: vec![
+                    String::from("player-1-id"),
+                    String::from("player-2-id"),
+                    String::from("player-3-id")
+                ],
+                winning_hand: String::from("Pair of Kings"),
             }
         );
     }
