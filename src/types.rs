@@ -111,13 +111,14 @@ pub struct Player {
 pub enum Variant {
     FiveCardDraw,
     TexasHoldem,
-    // FourCardOmahaHi,
+    FourCardOmahaHi,
 }
 impl fmt::Display for Variant {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let display_string = match self {
             Variant::FiveCardDraw => "Five-card draw",
             Variant::TexasHoldem => "Texas Hold 'em",
+            Variant::FourCardOmahaHi => "Omaha Hold 'em",
         };
 
         write!(f, "{}", display_string)
@@ -128,18 +129,21 @@ impl Variant {
         match self {
             Variant::FiveCardDraw => 5,
             Variant::TexasHoldem => 2,
+            Variant::FourCardOmahaHi => 4,
         }
     }
     pub fn num_board_cards(&self) -> Option<usize> {
         match self {
             Variant::FiveCardDraw => None,
             Variant::TexasHoldem => Some(5),
+            Variant::FourCardOmahaHi => Some(5),
         }
     }
     pub fn num_burn_cards(&self) -> Option<usize> {
         match self {
             Variant::FiveCardDraw => None,
             Variant::TexasHoldem => Some(3),
+            Variant::FourCardOmahaHi => Some(3),
         }
     }
 }
@@ -1134,6 +1138,12 @@ mod tests {
     }
 
     #[test]
+    fn test_variant_impl_to_string_four_card_omaha_hi() {
+        let variant = Variant::FourCardOmahaHi;
+        assert_eq!(variant.to_string(), "Omaha Hold 'em");
+    }
+
+    #[test]
     fn test_variant_impl_cards_per_player_five_card_draw() {
         let variant = Variant::FiveCardDraw;
         assert_eq!(variant.cards_per_player(), 5);
@@ -1143,6 +1153,12 @@ mod tests {
     fn test_variant_impl_cards_per_player_texas_holdem() {
         let variant = Variant::TexasHoldem;
         assert_eq!(variant.cards_per_player(), 2);
+    }
+
+    #[test]
+    fn test_variant_impl_cards_per_player_four_card_omaha_hi() {
+        let variant = Variant::FourCardOmahaHi;
+        assert_eq!(variant.cards_per_player(), 4);
     }
 
     #[test]
@@ -1158,6 +1174,12 @@ mod tests {
     }
 
     #[test]
+    fn test_variant_impl_num_board_cards_four_card_omaha_hi() {
+        let variant = Variant::FourCardOmahaHi;
+        assert_eq!(variant.num_board_cards(), Some(5));
+    }
+
+    #[test]
     fn test_variant_impl_num_burn_cards_five_card_draw() {
         let variant = Variant::FiveCardDraw;
         assert_eq!(variant.num_burn_cards(), None);
@@ -1166,6 +1188,12 @@ mod tests {
     #[test]
     fn test_variant_impl_num_burn_cards_texas_holdem() {
         let variant = Variant::TexasHoldem;
+        assert_eq!(variant.num_burn_cards(), Some(3));
+    }
+
+    #[test]
+    fn test_variant_impl_num_burn_cards_four_card_omaha_hi() {
+        let variant = Variant::FourCardOmahaHi;
         assert_eq!(variant.num_burn_cards(), Some(3));
     }
 }
