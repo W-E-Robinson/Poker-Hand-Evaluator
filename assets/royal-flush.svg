@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="75 25 310 175" width="310" height="175" role="img" aria-label="Royal flush in spades">
+  <defs>
+    <path id="spade" fill="#1b1f24" d="M0,-1 C0.4,-0.5 1,-0.2 1,0.25 C1,0.6 0.6,0.75 0.3,0.6 C0.2,0.55 0.1,0.45 0.08,0.4 L0.25,1 L-0.25,1 L-0.08,0.4 C-0.1,0.45 -0.2,0.55 -0.3,0.6 C-0.6,0.75 -1,0.6 -1,0.25 C-1,-0.2 -0.4,-0.5 0,-1 Z"/>
+  </defs>
+  <g transform="rotate(-20 230 330)">
+    <rect x="185" y="40" width="90" height="126" rx="8" fill="#fff" stroke="#c9ced6" stroke-width="1.5"/>
+    <text x="197" y="64" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="bold" fill="#1b1f24">10</text>
+    <use href="#spade" transform="translate(203 78) scale(6)"/>
+    <use href="#spade" transform="translate(230 108) scale(20)"/>
+  </g>
+  <g transform="rotate(-10 230 330)">
+    <rect x="185" y="40" width="90" height="126" rx="8" fill="#fff" stroke="#c9ced6" stroke-width="1.5"/>
+    <text x="197" y="64" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="bold" fill="#1b1f24">J</text>
+    <use href="#spade" transform="translate(203 78) scale(6)"/>
+    <use href="#spade" transform="translate(230 108) scale(20)"/>
+  </g>
+  <g transform="rotate(0 230 330)">
+    <rect x="185" y="40" width="90" height="126" rx="8" fill="#fff" stroke="#c9ced6" stroke-width="1.5"/>
+    <text x="197" y="64" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="bold" fill="#1b1f24">Q</text>
+    <use href="#spade" transform="translate(203 78) scale(6)"/>
+    <use href="#spade" transform="translate(230 108) scale(20)"/>
+  </g>
+  <g transform="rotate(10 230 330)">
+    <rect x="185" y="40" width="90" height="126" rx="8" fill="#fff" stroke="#c9ced6" stroke-width="1.5"/>
+    <text x="197" y="64" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="bold" fill="#1b1f24">K</text>
+    <use href="#spade" transform="translate(203 78) scale(6)"/>
+    <use href="#spade" transform="translate(230 108) scale(20)"/>
+  </g>
+  <g transform="rotate(20 230 330)">
+    <rect x="185" y="40" width="90" height="126" rx="8" fill="#fff" stroke="#c9ced6" stroke-width="1.5"/>
+    <text x="197" y="64" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="bold" fill="#1b1f24">A</text>
+    <use href="#spade" transform="translate(203 78) scale(6)"/>
+    <use href="#spade" transform="translate(230 108) scale(20)"/>
+  </g>
+</svg>
